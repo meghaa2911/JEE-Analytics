@@ -1,0 +1,1479 @@
+<title>JEE / BITSAT Test Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light;
+    --page:        #f4f4f0;
+    --surface:     #ffffff;
+    --surface-2:   #fbfaf7;
+    --ink-1:       #15171c;
+    --ink-2:       #54565f;
+    --ink-3:       #85868f;
+    --hairline:    rgba(21,23,28,0.09);
+    --hairline-2:  rgba(21,23,28,0.14);
+    --accent:      #33429b;
+    --accent-wash: rgba(51,66,155,0.08);
+    --advanced:    #9a3fb5;
+    --advanced-wash: rgba(154,63,181,0.10);
+    --bitsat:      #0f7a8c;
+    --bitsat-wash: rgba(15,122,140,0.10);
+    --good:        #0ca30c;
+    --critical:    #d03b3b;
+    --muted-status:#898781;
+    --warning:     #b9750a;
+    --phy:         #2a78d6;
+    --chem:        #eb6834;
+    --math:        #1baf7a;
+    --eng:         #c9930a;
+    --iq:          #c05a86;
+    --shadow:      0 1px 2px rgba(21,23,28,0.06), 0 8px 24px -12px rgba(21,23,28,0.18);
+    --remark-bg:   #fbf6e9;
+    --remark-edge: #c99a2e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:        #101216;
+      --surface:     #1a1d24;
+      --surface-2:   #20232b;
+      --ink-1:       #f0efe9;
+      --ink-2:       #b7b7b3;
+      --ink-3:       #83848c;
+      --hairline:    rgba(240,239,233,0.09);
+      --hairline-2:  rgba(240,239,233,0.15);
+      --accent:      #8b97ec;
+      --accent-wash: rgba(139,151,236,0.14);
+      --advanced:    #dd8fea;
+      --advanced-wash: rgba(221,143,234,0.14);
+      --bitsat:      #45c2d6;
+      --bitsat-wash: rgba(69,194,214,0.14);
+      --good:        #17c317;
+      --critical:    #e66767;
+      --muted-status:#9c9b95;
+      --warning:     #e0a53a;
+      --phy:         #3987e5;
+      --chem:        #e2793f;
+      --math:        #22c98a;
+      --eng:         #e0ac2f;
+      --iq:          #e388ae;
+      --shadow:      0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+      --remark-bg:   #23200f;
+      --remark-edge: #c99a2e;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #101216; --surface: #1a1d24; --surface-2: #20232b;
+    --ink-1: #f0efe9; --ink-2: #b7b7b3; --ink-3: #83848c;
+    --hairline: rgba(240,239,233,0.09); --hairline-2: rgba(240,239,233,0.15);
+    --accent: #8b97ec; --accent-wash: rgba(139,151,236,0.14);
+    --advanced: #dd8fea; --advanced-wash: rgba(221,143,234,0.14);
+    --bitsat: #45c2d6; --bitsat-wash: rgba(69,194,214,0.14);
+    --good: #17c317; --critical: #e66767; --muted-status: #9c9b95; --warning: #e0a53a;
+    --phy: #3987e5; --chem: #e2793f; --math: #22c98a; --eng: #e0ac2f; --iq: #e388ae;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    --remark-bg: #23200f; --remark-edge: #c99a2e;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --page: #f4f4f0; --surface: #ffffff; --surface-2: #fbfaf7;
+    --ink-1: #15171c; --ink-2: #54565f; --ink-3: #85868f;
+    --hairline: rgba(21,23,28,0.09); --hairline-2: rgba(21,23,28,0.14);
+    --accent: #33429b; --accent-wash: rgba(51,66,155,0.08);
+    --advanced: #9a3fb5; --advanced-wash: rgba(154,63,181,0.10);
+    --bitsat: #0f7a8c; --bitsat-wash: rgba(15,122,140,0.10);
+    --good: #0ca30c; --critical: #d03b3b; --muted-status: #898781; --warning: #b9750a;
+    --phy: #2a78d6; --chem: #eb6834; --math: #1baf7a; --eng: #c9930a; --iq: #c05a86;
+    --shadow: 0 1px 2px rgba(21,23,28,0.06), 0 8px 24px -12px rgba(21,23,28,0.18);
+    --remark-bg: #fbf6e9; --remark-edge: #c99a2e;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; width: 100%; }
+  body {
+    background: var(--page); color: var(--ink-1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-weight: 400; text-wrap: balance; color: var(--ink-1);
+  }
+  .num, .tabular { font-family: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  button { font: inherit; }
+
+  .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+
+  .rail {
+    background: var(--surface); border-right: 1px solid var(--hairline);
+    padding: 20px 14px; display: flex; flex-direction: column; gap: 2px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .rail-brand { padding: 4px 8px 18px; border-bottom: 1px solid var(--hairline); margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .rail-close-btn { display: none; }
+  .rail-brand .eyebrow { font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 4px; }
+  .rail-brand h1 { font-size: 18px; margin: 0; line-height: 1.25; }
+  .rail-group-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3);
+    padding: 12px 10px 4px; font-weight: 700;
+  }
+  .rail-item {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    padding: 8px 10px; border-radius: 8px; border: 1px solid transparent; background: none; cursor: pointer; color: var(--ink-2);
+  }
+  .rail-item:hover { background: var(--surface-2); }
+  .rail-item[aria-selected="true"] { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--ink-1); }
+  .rail-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .rail-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--ink-3); }
+  .rail-item .rt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .rail-item .rt .label { font-size: 13px; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rail-item .rt .sub { font-size: 10.5px; color: var(--ink-3); }
+  .rail-item .score-chip { margin-left: auto; font-size: 10.5px; padding: 2px 6px; border-radius: 5px; background: var(--surface-2); color: var(--ink-2); flex: none; }
+  .rail-foot { margin-top: auto; padding: 10px 8px 2px; font-size: 10.5px; color: var(--ink-3); border-top: 1px solid var(--hairline); }
+
+  .console { padding: 30px 40px 80px; max-width: 1180px; min-width: 0; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .console-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding-bottom: 20px; margin-bottom: 22px; border-bottom: 1px solid var(--hairline); flex-wrap: wrap; }
+  .console-head h2 { font-size: 26px; margin: 0 0 6px; }
+  .console-head .meta { color: var(--ink-2); font-size: 13.5px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .meta .dot-sep::before { content: "·"; margin-right: 10px; color: var(--ink-3); }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.01em; padding: 3px 9px 3px 7px; border-radius: 100px; border: 1px solid transparent; }
+  .badge.main { background: var(--accent-wash); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+  .badge.advanced { background: var(--advanced-wash); color: var(--advanced); border-color: color-mix(in srgb, var(--advanced) 35%, transparent); }
+  .badge.bitsat { background: var(--bitsat-wash); color: var(--bitsat); border-color: color-mix(in srgb, var(--bitsat) 35%, transparent); }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .info-pill { font-size: 12px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; max-width: 340px; line-height: 1.45; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(var(--kpi-cols, 6), 1fr); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 12px; overflow: hidden; margin-bottom: 26px; box-shadow: var(--shadow); }
+  .kpi { background: var(--surface); padding: 14px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .kpi .v { font-size: 20px; font-weight: 600; }
+  .kpi .v.good { color: var(--good); } .kpi .v.critical { color: var(--critical); }
+  .kpi .l { font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.01em; }
+
+  .section-title { font-size: 15px; margin: 0 0 3px; }
+  .section-sub { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; }
+  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 18px 20px 14px; box-shadow: var(--shadow); }
+  .card.wide { grid-column: 1 / -1; }
+  #panel-overview .card.wide { margin-bottom: 24px; }
+  .panel.subject-overview .card.wide { margin-bottom: 24px; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .legend-line { width: 14px; height: 2px; border-radius: 2px; flex: none; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; border: 1.5px solid var(--surface); }
+  .legend-square { width: 9px; height: 9px; border-radius: 2px; flex: none; border: 1.5px solid var(--surface); }
+  .legend-triangle { width: 11px; height: 10px; flex: none; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+  .legend.legend-sm { gap: 10px; margin-top: 6px; font-size: 10px; }
+  .legend.legend-sm .legend-item { gap: 4px; }
+  .legend.legend-sm .legend-swatch { width: 7px; height: 7px; }
+  .legend.legend-sm .legend-line { width: 10px; height: 1.5px; }
+  .legend.legend-sm .legend-dot, .legend.legend-sm .legend-square { width: 6.5px; height: 6.5px; }
+  .legend.legend-sm .legend-triangle { width: 8px; height: 7px; }
+
+  svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+  .grid-line { stroke: var(--hairline); stroke-width: 1; }
+  .axis-line { stroke: var(--hairline-2); stroke-width: 1; }
+  .axis-label { fill: var(--ink-3); font-size: 10.5px; font-family: ui-monospace, monospace; }
+  .cat-label { fill: var(--ink-2); font-size: 11px; }
+  .bar-mark { cursor: pointer; transition: opacity .12s ease; }
+  .bar-mark:hover, .bar-mark.hovered { opacity: 0.82; }
+  .bar-value { fill: var(--ink-1); font-size: 10.5px; font-weight: 600; font-family: ui-monospace, monospace; }
+  .line-mark { fill: none; stroke-width: 2.5; }
+  .hit-target { fill: transparent; cursor: pointer; }
+  .crosshair { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; pointer-events: none; opacity: 0; }
+
+  #tooltip {
+    position: fixed; z-index: 60; pointer-events: none; background: var(--surface);
+    border: 1px solid var(--hairline-2); border-radius: 8px; box-shadow: var(--shadow);
+    padding: 8px 11px; font-size: 12px; color: var(--ink-2); opacity: 0;
+    transform: translate(-50%, calc(-100% - 10px)); transition: opacity .08s ease; max-width: 250px;
+  }
+  #tooltip.show { opacity: 1; }
+  #tooltip .tt-title { color: var(--ink-1); font-weight: 600; margin-bottom: 4px; font-size: 12.5px; }
+  #tooltip .tt-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  #tooltip .tt-key { display: flex; align-items: center; gap: 6px; }
+  #tooltip .tt-swatch { width: 9px; height: 2px; border-radius: 2px; flex: none; }
+  #tooltip .tt-val { color: var(--ink-1); font-weight: 700; font-family: ui-monospace, monospace; }
+
+  .remarks { background: var(--remark-bg); border: 1px solid color-mix(in srgb, var(--remark-edge) 35%, transparent); border-left: 3px solid var(--remark-edge); border-radius: 10px; padding: 20px 22px 22px; margin-bottom: 26px; }
+  .remarks-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .remarks-head .eyebrow { font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--remark-edge); font-weight: 700; }
+  .remarks-head .powered { font-size: 11px; color: var(--ink-3); }
+  .remarks h3.headline { font-size: 17px; margin: 2px 0 16px; color: var(--ink-1); }
+  .remarks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
+  .remarks-col h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; color: var(--ink-2); font-family: inherit; font-weight: 700; }
+  .remarks-col ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: var(--ink-1); }
+  .remarks-col ul.strengths li::marker { color: var(--good); }
+  .remarks-col ul.weaknesses li::marker { color: var(--critical); }
+  .note-block { background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.55; color: var(--ink-1); margin-bottom: 12px; }
+  .note-block .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--advanced); display: block; margin-bottom: 5px; }
+  .note-block.rank .tag { color: var(--bitsat); }
+  .note-block.errorcode .tag { color: var(--critical); }
+  .concept-suggest { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cs-item { display: flex; gap: 10px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 10px 12px; }
+  .cs-item .cs-name { font-size: 12.5px; font-weight: 700; color: var(--ink-1); flex: 0 0 150px; }
+  .cs-item .cs-text { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .action-plan { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .action-plan li { display: flex; gap: 9px; font-size: 13px; line-height: 1.5; color: var(--ink-1); }
+  .action-plan .chk { flex: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid var(--remark-edge); margin-top: 1px; }
+  .note-bullets { margin: 0; padding-left: 16px; }
+  .note-bullets li { margin-bottom: 2px; }
+  .note-bullets li:last-child { margin-bottom: 0; }
+
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.data-table th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-3); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--hairline-2); cursor: pointer; user-select: none; white-space: nowrap; }
+  table.data-table th.num, table.data-table td.num { text-align: right; }
+  .summary-table-card table.data-table td.num { text-align: center; }
+  .concept-table-card table.data-table td.num { text-align: center; }
+  .concept-parent-row { cursor: pointer; }
+  .concept-parent-row:hover td { background: var(--surface-2); }
+  .concept-toggle-cell { display: flex; align-items: center; gap: 8px; }
+  .concept-caret { display: inline-block; font-size: 9px; color: var(--ink-3); transition: transform 0.15s ease; flex: none; }
+  .concept-parent-row.open .concept-caret { transform: rotate(90deg); }
+  .concept-subtopic-count { font-size: 10px; color: var(--ink-3); background: var(--surface-2); border: 1px solid var(--hairline-2); border-radius: 999px; padding: 1px 8px; margin-left: 4px; }
+  .concept-child-row td { border-bottom: 1px solid var(--hairline); background: var(--surface-2); font-size: 12px; color: var(--ink-3); }
+  .concept-child-row td.num { font-variant-numeric: tabular-nums; }
+  .concept-child-row td.num.strong { color: var(--ink-1); font-weight: 700; }
+  .concept-child-name { padding-left: 34px !important; color: var(--ink-2); }
+  .subject-table-card table.data-table td.num { text-align: center; }
+  table.data-table th:hover { color: var(--ink-1); }
+  table.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--hairline); color: var(--ink-2); }
+  table.data-table td.strong { color: var(--ink-1); font-weight: 600; }
+  table.data-table tr.row-main td { background: var(--accent-wash); }
+  table.data-table tr.row-advanced td { background: var(--advanced-wash); }
+  table.data-table tr.row-bitsat td { background: var(--bitsat-wash); }
+  table.data-table tr.row-subj-phy td { background: color-mix(in srgb, var(--phy) 12%, transparent); }
+  table.data-table tr.row-subj-chem td { background: color-mix(in srgb, var(--chem) 12%, transparent); }
+  table.data-table tr.row-subj-math td { background: color-mix(in srgb, var(--math) 12%, transparent); }
+  table.data-table tr.row-subj-eng td { background: color-mix(in srgb, var(--eng) 12%, transparent); }
+  table.data-table tr.row-subj-iq td { background: color-mix(in srgb, var(--iq) 12%, transparent); }
+  table.data-table tr:hover td { background: var(--surface-2); }
+  .subject-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+  .acc-chip { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; }
+  .acc-chip.good { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+  .acc-chip.warn { background: color-mix(in srgb, var(--warning) 18%, transparent); color: var(--warning); }
+  .acc-chip.bad { background: color-mix(in srgb, var(--critical) 15%, transparent); color: var(--critical); }
+  .acc-chip.na { background: var(--hairline); color: var(--ink-3); }
+
+  .table-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); margin-bottom: 26px; overflow-x: auto; }
+  .table-card.table-card-flush { padding: 0; overflow: hidden; }
+  .table-card.table-card-flush table.data-table th:first-child,
+  .table-card.table-card-flush table.data-table td:first-child { padding-left: 10px; }
+  .table-card.table-card-flush table.data-table th:last-child,
+  .table-card.table-card-flush table.data-table td:last-child { padding-right: 10px; }
+  .table-card.table-card-flush table.data-table th { padding-top: 14px; padding-bottom: 14px; text-align: center; font-weight: 700; color: var(--ink-1); }
+  .table-card.table-card-flush table.data-table td:first-child.strong { font-weight: 400; }
+  .table-card-title { text-align: center; font-size: 15px; font-weight: 700; color: var(--ink-1); padding: 16px 16px 12px; }
+  .table-card.table-card-flush table.data-table tr:last-child td { border-bottom: none; }
+
+  .pattern-strip { display: flex; gap: 14px; margin-bottom: 26px; flex-wrap: wrap; }
+  .pattern-fact { flex: 1; min-width: 220px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 10px; padding: 13px 15px; box-shadow: var(--shadow); }
+  .pattern-fact .pf-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); margin-bottom: 4px; }
+  .pattern-fact .pf-val { font-size: 12.5px; color: var(--ink-1); line-height: 1.5; }
+
+  .untracked-note { font-size: 11.5px; color: var(--ink-3); background: var(--surface-2); border: 1px dashed var(--hairline-2); border-radius: 6px; padding: 6px 10px; margin-top: 8px; }
+
+  /* ---------- Mobile top bar + collapsible rail drawer ---------- */
+  .mobile-topbar { display: none; }
+  .rail-backdrop { display: none; }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: minmax(0, 1fr); display: block; }
+    .mobile-topbar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; background: var(--surface); border-bottom: 1px solid var(--hairline);
+      position: sticky; top: 0; z-index: 40;
+    }
+    .hamburger-btn {
+      flex: none; width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--hairline); background: var(--surface-2);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      cursor: pointer; padding: 0;
+    }
+    .hamburger-btn span { display: block; width: 16px; height: 2px; border-radius: 1px; background: var(--ink-2); }
+    .hamburger-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .mt-titlewrap { min-width: 0; flex: 1; }
+    .mobile-topbar .mt-title { font-size: 14px; font-weight: 600; color: var(--ink-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-topbar .mt-sub { font-size: 11px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .rail-close-btn {
+      display: flex; align-items: center; justify-content: center;
+      flex: none; width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--hairline); background: var(--surface-2); color: var(--ink-2);
+      font-size: 20px; line-height: 1; cursor: pointer; padding: 0;
+    }
+
+    .rail-backdrop {
+      display: block; position: fixed; inset: 0; background: rgba(10,10,12,0.45);
+      z-index: 65; opacity: 0; pointer-events: none; transition: opacity .2s ease;
+    }
+    .rail-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .rail {
+      position: fixed; top: 0; left: 0; height: 100vh; width: 82%; max-width: 300px;
+      transform: translateX(-100%); transition: transform .25s ease;
+      z-index: 70; box-shadow: 0 0 0 1px var(--hairline), 8px 0 24px -8px rgba(0,0,0,0.35);
+      min-width: 0;
+    }
+    .rail.open { transform: translateX(0); }
+    .rail-item { flex: none; }
+    .console { padding: 18px 14px 50px; min-width: 0; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .remarks-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .kpi { padding: 12px 10px; }
+    .kpi .v { font-size: 18px; }
+    .cs-item { flex-direction: column; gap: 3px; }
+    .cs-item .cs-name { flex: none; }
+    /* Tighten tables so they fit the screen width without horizontal scroll. */
+    .table-card { padding: 12px 8px; }
+    table.data-table { font-size: 10.5px; }
+    table.data-table th, table.data-table td { padding: 6px 3px; }
+    table.data-table th:first-child, table.data-table td:first-child { padding-left: 0; }
+    table.data-table th:last-child, table.data-table td:last-child { padding-right: 0; }
+    .badge { font-size: 10px; padding: 2px 7px 2px 6px; gap: 4px; }
+    .acc-chip { font-size: 10px; padding: 1px 5px; }
+    .subject-dot { width: 6px; height: 6px; margin-right: 4px; }
+  }
+  @media (max-width: 480px) {
+    .console-head h2 { font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <nav class="rail" id="rail" aria-label="Test navigation"></nav>
+  <main class="console" id="console"></main>
+</div>
+<div id="tooltip" role="status" aria-live="polite"></div>
+
+<script id="dashboard-data" type="application/json">{"generatedFor": "JEE Aspirant \u2014 Weekly & Milestone Tests (Monday Test Series)", "patternInfo": {"JEE Main": {"questions": "75 (25 Physics + 25 Chemistry + 25 Maths)", "marking": "+4 correct / -1 incorrect on MCQs; numerical-type questions are +4/0 (no negative) in the real exam", "duration_min": 180, "character": "Higher volume, mostly single-correct MCQs plus some numerical-answer questions. Rewards speed, accuracy and calm question-selection under a 180-minute clock."}, "JEE Advanced": {"questions": "54 (18 Physics + 18 Chemistry + 18 Maths)", "marking": "Marking varies by question type: single-correct is typically +3/-1, multi-correct questions give partial credit and 0 (not negative) if nothing is marked, numerical types are usually +4/0", "duration_min": 180, "character": "Fewer, deeper questions per subject with more multi-step reasoning and multi-correct-option items than JEE Main. Scores here are not directly comparable to a JEE Main percentage."}, "BITSAT": {"questions": "130 (Physics 30, Chemistry 30, English Proficiency 10, Logical Reasoning 20, Maths 40)", "marking": "+3 correct / -1 incorrect, uniform across all sections including English and Logical Reasoning", "duration_min": 180, "character": "A different exam altogether from JEE: adds English Proficiency and Logical Reasoning sections, larger Maths weight (40 questions), and rewards broad speed across 5 sections rather than deep problem-solving on any one."}}, "errorCodeLegend": {"WBE": "Bubbling Error", "WCE": "Calculation Error", "WFE": "Formula Error", "WIR": "Improper Reading", "WNL": "No Luck", "NLOT": "Lack Of Time", "NCNS": "Concept Not Studied", "NDUQ": "Didn't Understand Question", "NNIF": "No Idea Flashed", "NDNB": "Done But Not Bubbled"}, "tests": [{"paperId": "15-06-2026", "date": "15-06-2026", "dateLabel": "15 Jun 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 52, "wrong": 8, "unattempted": 15, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 86.7, "attemptRate": 80.0, "score": 201, "maxScore": 300, "rank": 72, "pctOfMax": 67.0}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 21, "wrong": 2, "unattempted": 2, "score": 80, "maxScore": 100, "subjectRank": null, "accuracy": 91.3, "attemptRate": 92.0, "tracked": true, "pctOfMax": 80.0}, {"subject": "Chemistry", "totalQ": 25, "right": 17, "wrong": 3, "unattempted": 5, "score": 73, "maxScore": 100, "subjectRank": null, "accuracy": 85.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 73.0}, {"subject": "Maths", "totalQ": 25, "right": 14, "wrong": 3, "unattempted": 8, "score": 48, "maxScore": 100, "subjectRank": null, "accuracy": 82.4, "attemptRate": 68.0, "tracked": true, "pctOfMax": 48.0}], "concepts": [{"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Balancing Redox Reactions", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Balancing Redox Reactions / Stoichiometry", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Redox Titrations", "wrong": 0, "unattempted": 2, "total": 2}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality and Equivalent Weight", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality and Equivalents", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "n-factor and Normality", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Logarithms and Inequalities", "subtopic": "Logarithm in AP", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Quadratic Equations", "subtopic": "Common Roots", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "AP and GP", "wrong": 0, "unattempted": 2, "total": 3}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Geometric Progression", "wrong": 0, "unattempted": 1, "total": 2}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Infinite Series", "wrong": 2, "unattempted": 1, "total": 5}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Means (AM, GM, HM)", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Special Series", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Summation of Series", "wrong": 0, "unattempted": 1, "total": 2}, {"subject": "Physics", "concept": "Kinematics", "subtopic": "Relative Motion in One Dimension", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Mathematical Physics", "subtopic": "Applications of Derivatives", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Vectors", "subtopic": "Addition of Vectors", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Vectors", "subtopic": "Equilibrium of Forces", "wrong": 1, "unattempted": 0, "total": 1}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 5}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 5}, {"code": "WIR", "label": "Improper Reading", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Physics", "count": 1}], "insights": {"headline": "Strong performance of 201 marks out of 300 placed you at rank 72, led by an excellent 80 marks in Physics.", "strengths": ["Physics was your strongest subject with an impressive 80 marks, achieving 91.3% accuracy across 23 attempted questions.", "Your overall accuracy was solid at 86.7% across 52 correct answers, showing strong fundamentals when questions are attempted."], "weaknesses": ["Maths was a major bottleneck, yielding only 48 marks due to a low attempt rate of 68.0% and 8 unattempted questions.", "Chemistry suffered from preventable errors, incurring 5 negative marks primarily driven by formula oversights."], "patternNote": "In this 180-minute 75-question JEE Main pattern, spending excessive time on Chemistry and Physics left insufficient time to complete the Maths section.", "rankNote": "Your overall rank of 72 with a 67.0% score reflects strong core potential, but unlocking a top rank requires lifting Maths from 48 marks closer to Physics level.", "errorCodeNote": "The tied most frequent error codes were Formula Error (5 in Chemistry) and Lack Of Time (5 in Maths). This reveals that lost marks were split between memory gaps in Chemistry topics like Normality and time management pressure in Maths subtopics like Infinite Series.", "conceptSuggestions": [{"concept": "Sequences and Series", "subtopic": "Infinite Series", "suggestion": "Review formulas for sums of infinite AGP and GP series, and solve 10 targeted practice problems to boost speed."}, {"concept": "Redox Reactions", "subtopic": "Redox Titrations", "suggestion": "Practice calculating n-factors and milliequivalents for redox couples until titration step setups become second nature."}, {"concept": "Sequences and Series", "subtopic": "AP and GP", "suggestion": "Revisit standard term-selection techniques and sum properties for mixed progression questions."}, {"concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality and Equivalent Weight", "suggestion": "Write out equivalent weight definitions for acids, bases, and salts to eliminate formula errors in concentration numericals."}]}}, {"paperId": "22-06-2026", "date": "22-06-2026", "dateLabel": "22 Jun 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 39, "wrong": 11, "unattempted": 4, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 78.0, "attemptRate": 92.6, "score": 126, "maxScore": 186, "rank": 31, "pctOfMax": 67.7}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 15, "wrong": 1, "unattempted": 2, "score": 52, "maxScore": 62, "subjectRank": null, "accuracy": 93.8, "attemptRate": 88.9, "tracked": true, "pctOfMax": 83.9}, {"subject": "Chemistry", "totalQ": 18, "right": 10, "wrong": 7, "unattempted": 1, "score": 35, "maxScore": 62, "subjectRank": null, "accuracy": 58.8, "attemptRate": 94.4, "tracked": true, "pctOfMax": 56.5}, {"subject": "Maths", "totalQ": 18, "right": 14, "wrong": 3, "unattempted": 1, "score": 39, "maxScore": 62, "subjectRank": null, "accuracy": 82.4, "attemptRate": 94.4, "tracked": true, "pctOfMax": 62.9}], "concepts": [{"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Concept", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Concept and Titrations", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Weight", "wrong": 2, "unattempted": 0, "total": 3}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Redox Titrations", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Neutralization Titration", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality and Concentration Units", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Subatomic Particles and e/m Ratio", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Geometric and Harmonic Progression", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Sequences and Series", "subtopic": "Progressions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Compound Angles", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Series", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Projection of Vectors", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Vector Addition", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Vector Addition and Section Formula", "wrong": 0, "unattempted": 1, "total": 1}], "errorCodes": [{"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 5}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 1}], "insights": {"headline": "Strong performance in Physics (52/62) was offset by frequent execution errors in Chemistry, leading to an overall rank of 31 with 126/186 marks.", "strengths": ["Physics accuracy was exceptional at 93.8% with 15 correct questions, contributing 52 out of 62 marks.", "Maths showed solid performance with an 82.4% accuracy rate and 14 correct questions out of 18 attempted."], "weaknesses": ["Chemistry performance was weak with 7 incorrect questions out of 18, leading to a low accuracy of 58.8% and only 35 marks.", "Redox Reactions and related titration subtopics resulted in 5 combined wrong or unattempted questions."], "patternNote": "While high attempt rates (94.4% in Chemistry and Maths) suit JEE Advanced numerical sections, incurring negative marks from 7 incorrect Chemistry attempts eroded total score efficiency.", "rankNote": "An overall rank of 31 reflects a strong score of 126, but converting Chemistry's lost penalty marks would significantly boost rank positioning.", "errorCodeNote": "The single most frequent error code was Calculation Error (WCE), which occurred 6 times (5 in Chemistry, 1 in Maths). This reveals that marks were lost mainly due to careless execution during numerical steps rather than conceptual gaps, hitting Chemistry subtopics like Equivalent Weight particularly hard.", "conceptSuggestions": [{"concept": "Redox Reactions", "subtopic": "Equivalent Weight", "suggestion": "Review n-factor rules for different reaction media and practice step-by-step equivalence numericals to eliminate calculation errors."}, {"concept": "Redox Reactions", "subtopic": "Redox Titrations", "suggestion": "Solve 10 classic redox titration problems focusing on milliequivalent equality equations to build accuracy."}, {"concept": "Trigonometric Ratios and Identities", "subtopic": "Compound Angles", "suggestion": "Re-derive core compound angle transformations and practice 5 multi-step expression simplification questions."}, {"concept": "Physics and Mathematics", "subtopic": "Vector Addition", "suggestion": "Revise component-wise vector addition methods and verify unit vector signs before concluding numerical steps."}]}}, {"paperId": "06-07-2026", "date": "06-07-2026", "dateLabel": "06 Jul 2026", "pattern": "BITSAT", "totalQuestions": 130, "overall": {"right": 81, "wrong": 13, "unattempted": 6, "total": 130, "trackedTotal": 100, "untrackedSubjects": ["English", "IQ"], "accuracy": 86.2, "attemptRate": 94.0, "score": 303, "maxScore": 390, "rank": 22, "pctOfMax": 77.7}, "subjects": [{"subject": "Physics", "totalQ": 30, "right": 26, "wrong": 4, "unattempted": 0, "score": 74, "maxScore": 90, "subjectRank": 55, "accuracy": 86.7, "attemptRate": 100.0, "tracked": true, "pctOfMax": 82.2}, {"subject": "Chemistry", "totalQ": 30, "right": 26, "wrong": 4, "unattempted": 0, "score": 78, "maxScore": 90, "subjectRank": 14, "accuracy": 86.7, "attemptRate": 100.0, "tracked": true, "pctOfMax": 86.7}, {"subject": "Maths", "totalQ": 40, "right": 29, "wrong": 5, "unattempted": 6, "score": 82, "maxScore": 120, "subjectRank": 27, "accuracy": 85.3, "attemptRate": 85.0, "tracked": true, "pctOfMax": 68.3}, {"subject": "English", "totalQ": 10, "right": null, "wrong": null, "unattempted": null, "score": 22, "maxScore": 30, "subjectRank": 201, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 73.3}, {"subject": "IQ", "totalQ": 20, "right": null, "wrong": null, "unattempted": null, "score": 47, "maxScore": 60, "subjectRank": 80, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 78.3}], "concepts": [{"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr Energy Levels", "wrong": 1, "unattempted": 0, "total": 3}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr Model of Atom", "wrong": 1, "unattempted": 0, "total": 3}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr Orbit Radius", "wrong": 1, "unattempted": 0, "total": 5}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Hydrogen Spectrum", "wrong": 1, "unattempted": 0, "total": 8}, {"subject": "Maths", "concept": "Logarithms and Trigonometry", "subtopic": "Logarithmic Evaluation of Trigonometric Products", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Quadratic Equations", "subtopic": "Forming Quadratic Equations from Roots", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Elimination of Trigonometric Variables", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Inverse Trigonometric Ratios and Range", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Product of Trigonometric Series", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Trigonometric Equations", "wrong": 0, "unattempted": 1, "total": 2}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Trigonometric Equations and Identities", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Trigonometric Identities", "wrong": 2, "unattempted": 2, "total": 12}, {"subject": "Physics", "concept": "Kinematics", "subtopic": "Average Speed", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Physics", "concept": "Units and Dimensions", "subtopic": "Dimensional Analysis", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Physics", "concept": "Units and Dimensions", "subtopic": "Errors in Measurement", "wrong": 1, "unattempted": 0, "total": 4}, {"subject": "Physics", "concept": "Units and Dimensions", "subtopic": "Vernier Callipers", "wrong": 1, "unattempted": 0, "total": 2}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 3}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 3}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Maths", "count": 1}], "insights": {"headline": "Secured Rank 22 overall with a score of 303/390 (77.7%) on the 130-question BITSAT test, backed by high attempt rates in core sciences.", "strengths": ["Achieved an impressive Subject Rank 14 in Chemistry with 78/90 marks and 86.7% accuracy.", "Maintained a 100% attempt rate in both Physics and Chemistry, demonstrating great speed and confidence."], "weaknesses": ["Maths performance lagged with 6 unattempted questions and a score of 82/120 (Rank 27), driven by struggles in Trigonometric Functions.", "English subject rank dropped to 201 with a raw score of 22/30, indicating a competitive gap relative to the cohort."], "patternNote": "BITSAT emphasizes broad speed across 130 questions over 180 minutes; leaving 6 questions unattempted in Maths (the largest section with 40 questions) directly capped your score potential in a time-critical format.", "rankNote": "Your overall rank of 22 is solid, but while a Physics score of 74/90 seems strong in isolation, a subject rank of 55 reveals the cohort scored even higher. Furthermore, scoring 22/30 in English resulted in a low subject rank of 201, showing where peers pulled ahead.", "errorCodeNote": "Calculation Error was your single most frequent error code with 5 instances, proving that mark loss was dominated by execution slips rather than conceptual gaps. This hit subtopics like Trigonometric Identities, Bohr Orbit Radius, and Errors in Measurement where correct setups yielded incorrect final options.", "conceptSuggestions": [{"concept": "Trigonometric Functions", "subtopic": "Trigonometric Identities", "suggestion": "Solve 15 targeted speed-drills on product-to-sum and multiple-angle transformations to reduce identity simplification errors."}, {"concept": "Structure of Atom", "subtopic": "Bohr Orbit Radius", "suggestion": "Re-derive the Z and n dependence formulas and practice 10 substitution problems to eliminate simple calculation slips."}, {"concept": "Units and Dimensions", "subtopic": "Errors in Measurement", "suggestion": "Review fractional error propagation rules for power terms and complete 10 multi-variable precision exercises."}, {"concept": "Units and Dimensions", "subtopic": "Vernier Callipers", "suggestion": "Practice 5 detailed numericals on zero error adjustments and main scale reading alignment to fix practical measurement errors."}]}}, {"paperId": "13-07-2026", "date": "13-07-2026", "dateLabel": "13 Jul 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 69, "wrong": 6, "unattempted": 0, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 92.0, "attemptRate": 100.0, "score": 270, "maxScore": 300, "rank": 14, "pctOfMax": 90.0}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 24, "wrong": 1, "unattempted": 0, "score": 95, "maxScore": 100, "subjectRank": 11, "accuracy": 96.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 95.0}, {"subject": "Chemistry", "totalQ": 25, "right": 21, "wrong": 4, "unattempted": 0, "score": 80, "maxScore": 100, "subjectRank": 159, "accuracy": 84.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 80.0}, {"subject": "Maths", "totalQ": 25, "right": 24, "wrong": 1, "unattempted": 0, "score": 95, "maxScore": 100, "subjectRank": 6, "accuracy": 96.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 95.0}], "concepts": [{"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle", "wrong": 3, "unattempted": 0, "total": 5}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "de Broglie Wavelength", "wrong": 1, "unattempted": 0, "total": 6}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Maximum and Minimum Values", "wrong": 1, "unattempted": 0, "total": 5}, {"subject": "Physics", "concept": "Motion in a Plane", "subtopic": "Projectile Motion", "wrong": 1, "unattempted": 0, "total": 12}], "errorCodes": [{"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 2}], "insights": {"headline": "Outstanding 270/300 overall score securing Rank 14, driven by stellar 95s in Physics and Maths but dragged by 4 errors in Chemistry.", "strengths": ["Achieved elite performance in Maths with 95/100 (subject rank 6) and Physics with 95/100 (subject rank 11), missing only 1 question in each.", "Demonstrated complete syllabus coverage and high confidence by achieving a 100% attempt rate across all 75 questions with an overall accuracy of 92.0%."], "weaknesses": ["Chemistry lagged behind with an 80/100 score, resulting in a low subject rank of 159 due to 4 missed questions.", "Structure of Atom in Chemistry accounted for 4 wrong attempts, concentrated in Heisenberg Uncertainty Principle and de Broglie Wavelength."], "patternNote": "Attempting all 75 questions in 180 minutes matches the high-speed demand of JEE Main, but 6 incorrect attempts cost 6 negative marks under the standard marking scheme.", "rankNote": "Your overall Rank 14 reflects strong mastery, but while Maths (rank 6) and Physics (rank 11) were top-tier, Chemistry rank 159 reveals that the cohort scored much higher in Chemistry where your 80/100 caused a steep rank drop.", "errorCodeNote": "Formula Error (WFE) was the most frequent error code with 2 instances, showing that execution mistakes rather than pacing hit Chemistry subtopics like Heisenberg Uncertainty Principle hardest.", "conceptSuggestions": [{"concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle", "suggestion": "Review exact formula definitions involving momentum-position uncertainty and practise 10 numerical problems to prevent formula confusion."}, {"concept": "Structure of Atom", "subtopic": "de Broglie Wavelength", "suggestion": "Revise formulas linking wavelength to accelerating potential and kinetic energy to eliminate formula application errors."}, {"concept": "Trigonometric Functions", "subtopic": "Maximum and Minimum Values", "suggestion": "Work on standard bound-finding techniques such as Cauchy-Schwarz and R sin(x+phi) transformations to eliminate approach errors."}]}}, {"paperId": "20-07-2026P1", "date": "20-07-2026", "dateLabel": "20 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 39, "wrong": 8, "unattempted": 7, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 83.0, "attemptRate": 87.0, "score": 140, "maxScore": 186, "rank": 22, "pctOfMax": 75.3}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 12, "wrong": 2, "unattempted": 4, "score": 46, "maxScore": 62, "subjectRank": 13, "accuracy": 85.7, "attemptRate": 77.8, "tracked": true, "pctOfMax": 74.2}, {"subject": "Chemistry", "totalQ": 18, "right": 15, "wrong": 1, "unattempted": 2, "score": 51, "maxScore": 62, "subjectRank": 32, "accuracy": 93.8, "attemptRate": 88.9, "tracked": true, "pctOfMax": 82.3}, {"subject": "Maths", "totalQ": 18, "right": 12, "wrong": 5, "unattempted": 1, "score": 43, "maxScore": 62, "subjectRank": 57, "accuracy": 70.6, "attemptRate": 94.4, "tracked": true, "pctOfMax": 69.4}], "concepts": [{"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Hydrogen Spectrum", "wrong": 0, "unattempted": 1, "total": 2}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Quantum Mechanical Model", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Quantum Numbers and Configurations", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Hyperbola", "subtopic": "Locus Definition of Hyperbola", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "The Straight Lines", "subtopic": "Area of Triangle Transformations", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "The Straight Lines", "subtopic": "Locus", "wrong": 1, "unattempted": 1, "total": 3}, {"subject": "Maths", "concept": "The Straight Lines", "subtopic": "Triangles and Centers", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Transformation of Axes", "subtopic": "Rotation of Axes", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Motion in a Plane", "subtopic": "Kinematics in Two Dimensions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Motion in a Plane", "subtopic": "Projectile Motion", "wrong": 2, "unattempted": 0, "total": 7}, {"subject": "Physics", "concept": "Motion in a Plane", "subtopic": "Projectile Motion with Resistance", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Motion in a Plane", "subtopic": "Relative Velocity", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Motion in a Straight Line", "subtopic": "Relative Motion", "wrong": 0, "unattempted": 1, "total": 2}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Chemistry", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Physics", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Chemistry", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WNL", "label": "No Luck", "subject": "Maths", "count": 1}], "insights": {"headline": "Strong performance securing 140/186 marks and overall rank 22, led by Chemistry (51/62) but dragged down by calculation slips in Maths.", "strengths": ["Chemistry delivered 51/62 marks with an outstanding 93.8% accuracy (15 right out of 18 questions).", "Physics maintained a solid 85.7% accuracy with 46/62 marks, showing strong precision across attempted questions."], "weaknesses": ["Maths accuracy dipped to 70.6% with 5 incorrect attempts out of 17 questions tried, yielding a subject rank of 57.", "Careless calculation and formula errors accounted for 7 incorrect responses across Maths and Physics."], "patternNote": "In this 54-question JEE Advanced format where negative marking applies to single-correct options, high attempt rates paid off in Chemistry (88.9%) but caused unnecessary penalty leaks in Maths (94.4% attempt rate).", "rankNote": "Your overall rank of 22 is strong, but subject ranks reveal that while 51 in Chemistry placed you at rank 32, scoring 43 in Maths slipped your subject rank to 57 as peers performed significantly better in coordinate geometry.", "errorCodeNote": "The most frequent issue was Calculation Error (4 instances: 3 in Maths, 1 in Chemistry), showing that mark losses were dominated by execution slips rather than conceptual gaps, hitting subtopics like Locus and Rotation of Axes hardest.", "conceptSuggestions": [{"concept": "Motion in a Plane", "subtopic": "Projectile Motion", "suggestion": "Solve 10 advanced multi-step trajectory problems to solidify parameter substitution and prevent formula application errors under timed conditions."}, {"concept": "The Straight Lines", "subtopic": "Locus", "suggestion": "Work through parametric locus transformations step-by-step to avoid algebraic and calculation mistakes in coordinate geometry."}, {"concept": "Structure of Atom", "subtopic": "Quantum Numbers and Configurations", "suggestion": "Review exception cases in electronic configurations and practice multi-correct questions on quantum numbers to refine conceptual clarity."}]}}, {"paperId": "27-07-2026P1", "date": "27-07-2026", "dateLabel": "27 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 25, "wrong": 15, "unattempted": 14, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 62.5, "attemptRate": 74.1, "score": 95, "maxScore": 186, "rank": 43, "pctOfMax": 51.1}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 11, "wrong": 6, "unattempted": 1, "score": 38, "maxScore": 62, "subjectRank": 17, "accuracy": 64.7, "attemptRate": 94.4, "tracked": true, "pctOfMax": 61.3}, {"subject": "Chemistry", "totalQ": 18, "right": 6, "wrong": 6, "unattempted": 6, "score": 27, "maxScore": 62, "subjectRank": 117, "accuracy": 50.0, "attemptRate": 66.7, "tracked": true, "pctOfMax": 43.5}, {"subject": "Maths", "totalQ": 18, "right": 8, "wrong": 3, "unattempted": 7, "score": 30, "maxScore": 62, "subjectRank": 45, "accuracy": 72.7, "attemptRate": 61.1, "tracked": true, "pctOfMax": 48.4}], "concepts": [{"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Atomic and Ionic Radii", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Ionization Enthalpy", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Nature of Oxides", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Periodic Trends in Properties", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Weight", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Weight and n-factor", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Redox Titrations", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Equivalent Concept and Volumetric Analysis", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Kjeldahl's Method", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr's Atomic Model", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Electronic Configuration", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Quantum Numbers", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Properties of Triangles", "subtopic": "Circumcentre and Orthocentre", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Properties of Triangles", "subtopic": "Distances from Sides", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Locus and Distance Problems", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Pair of Straight Lines", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Reflection and Image of a Point", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Maximum and Minimum Values of Trigonometric Functions", "wrong": 1, "unattempted": 1, "total": 3}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Multiple and Submultiple Angles", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Sum of Trigonometric Series", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Trigonometric Series", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Projectile Motion", "subtopic": "Projectile on an Inclined Plane", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Rest and Motion : Kinematics", "subtopic": "Graphical Analysis of Motion", "wrong": 2, "unattempted": 0, "total": 2}, {"subject": "Physics", "concept": "Rest and Motion : Kinematics", "subtopic": "Motion in Two Dimensions", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Units and Measurements", "subtopic": "Dimensional Analysis", "wrong": 1, "unattempted": 0, "total": 3}, {"subject": "Physics", "concept": "Units and Measurements", "subtopic": "Screw Gauge", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Work, Energy and Power", "subtopic": "Vertical Circular Motion", "wrong": 0, "unattempted": 1, "total": 1}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Physics", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Chemistry", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Chemistry", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 2}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 4}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 5}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 3}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 4}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Achieved a competitive overall score of 95/186 (Rank 43), powered by a strong Physics score of 38 (Subject Rank 17) but pulled down by Chemistry performance (Subject Rank 117).", "strengths": ["Physics was your highest scoring subject with 38/62 marks and an impressive Subject Rank 17, driven by a high 94.4% attempt rate.", "Maths maintained high precision with 72.7% accuracy (8 right, 3 wrong), securing a solid Subject Rank of 45."], "weaknesses": ["Chemistry severely dragged down your overall standing with a Subject Rank of 117 and 50% accuracy across 12 attempts.", "Execution errors hurt overall output, accumulating 8 total Calculation Errors across subjects along with 6 Formula Errors."], "patternNote": "In this 180-minute JEE Advanced format with 54 total questions, achieving 51.1% of max marks is solid, but losing 15 marks to incorrect attempts reduced your potential top-tier score.", "rankNote": "Your overall rank of 43 is strong, but the stark contrast between your Physics rank (17) and Chemistry rank (117) shows the peer group outperformed you significantly in Chemistry despite identical total subject marks available.", "errorCodeNote": "The single most frequent error code was No Idea Flashed (9 total counts across Chemistry and Maths), while Calculation Error caused 8 wrong answers hit hardest in subtopics like Graphical Analysis of Motion and Bohr's Atomic Model.", "conceptSuggestions": [{"concept": "Rest and Motion : Kinematics", "subtopic": "Graphical Analysis of Motion", "suggestion": "Re-examine velocity-time and acceleration-time graph conversions and practice 5-10 advanced calculus-based graph problems to avoid calculation slips."}, {"concept": "Trigonometric Functions", "subtopic": "Maximum and Minimum Values of Trigonometric Functions", "suggestion": "Revise standard single sine-cosine transformations along with AM-GM inequality applications for trigonometric expressions."}, {"concept": "Structure of Atom", "subtopic": "Bohr's Atomic Model", "suggestion": "Review formulas for orbital radius, velocity, and energy transitions in hydrogen-like species, focusing on unit conversions and multi-step arithmetic."}, {"concept": "Redox Reactions", "subtopic": "Equivalent Weight and n-factor", "suggestion": "Practice calculating n-factors in disproportionation and complex redox titration reactions to ensure accuracy in volumetric analysis questions."}]}}, {"paperId": "27-07-2026P2", "date": "27-07-2026", "dateLabel": "27 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 31, "wrong": 12, "unattempted": 11, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 72.1, "attemptRate": 79.6, "score": 106, "maxScore": 186, "rank": 28, "pctOfMax": 57.0}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 13, "wrong": 3, "unattempted": 2, "score": 45, "maxScore": 62, "subjectRank": 27, "accuracy": 81.2, "attemptRate": 88.9, "tracked": true, "pctOfMax": 72.6}, {"subject": "Chemistry", "totalQ": 18, "right": 9, "wrong": 6, "unattempted": 3, "score": 27, "maxScore": 62, "subjectRank": 78, "accuracy": 60.0, "attemptRate": 83.3, "tracked": true, "pctOfMax": 43.5}, {"subject": "Maths", "totalQ": 18, "right": 9, "wrong": 3, "unattempted": 6, "score": 34, "maxScore": 62, "subjectRank": 25, "accuracy": 75.0, "attemptRate": 66.7, "tracked": true, "pctOfMax": 54.8}], "concepts": [{"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Periodic Trends and Properties", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Periodic Trends in Properties", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Limiting Reagent and Stoichiometric Calculations", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Molarity and Concentration of Mixture", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Mole Concept and Avogadro's Law", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Stoichiometry and Gas Laws", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr Model and Hydrogen Spectrum", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle and de Broglie Wavelength", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Ionization Energy and Electron Gain Enthalpy", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Position of a Point relative to a Triangle", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Rotation of Axes and Line Intercepts", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Evaluation of Trigonometric Expressions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Equations and Identities", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Identities", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Identities and Sums", "wrong": 1, "unattempted": 1, "total": 2}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Products and Sums", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Sums and Radical Expressions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Rest and Motion : Kinematics", "subtopic": "Relative Motion", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Rest and Motion : Kinematics", "subtopic": "Relative Motion in River Swimmer", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Physics", "concept": "Rest and Motion : Kinematics", "subtopic": "Velocity-Position Graph", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Units and Dimensions", "subtopic": "Dimensional Analysis", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Units and Dimensions", "subtopic": "Error Analysis", "wrong": 0, "unattempted": 1, "total": 1}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Chemistry", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Maths", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Physics", "count": 2}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 2}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 4}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 2}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Physics", "count": 1}], "insights": {"headline": "Solid performance in Physics and Maths secured an overall rank of 28, but heavy penalties in Chemistry hindered a higher score.", "strengths": ["Physics was your strongest subject, scoring 45 out of 62 with an 81.2% accuracy and securing a subject rank of 27.", "Maths demonstrated high precision with 75.0% accuracy, earning a subject rank of 25 despite a conservative attempt rate."], "weaknesses": ["Chemistry dropped to a subject rank of 78 after scoring only 27 marks with 6 incorrect responses.", "Trigonometric Ratios and Identities caused major friction in Maths, accounting for multiple unattempted questions and errors."], "patternNote": "In this JEE Advanced pattern with partial marking and negative scores on single-correct items, high accuracy in Physics paid off well. However, 6 incorrect responses in Chemistry severely impacted your total score, highlighting the need for stricter option-elimination before guessing.", "rankNote": "Your overall rank of 28 aligns closely with your strong positions in Physics (rank 27) and Maths (rank 25). Conversely, your Chemistry rank of 78 shows that the cohort scored significantly higher in Chemistry, making it the main area pulling down your overall standing.", "errorCodeNote": "The most frequent error code was 'No Idea Flashed' with 6 total instances (4 in Maths and 2 in Chemistry), indicating conceptual unfamiliarity particularly in Trigonometric Ratios and Identities subtopics. Additionally, 3 questions marked as 'Done But Not Bubbled' across Physics and Maths resulted in unnecessary lost marks.", "conceptSuggestions": [{"concept": "Trigonometric Ratios and Identities", "subtopic": "Trigonometric Identities and Sums", "suggestion": "Review multi-term summation formulas and product-to-sum transformations through targeted problem sets."}, {"concept": "Rest and Motion : Kinematics", "subtopic": "Relative Motion in River Swimmer", "suggestion": "Re-derive vector relative velocity components for shortest-path and minimum-time scenarios to eliminate setup errors."}, {"concept": "Some Basic Concepts of Chemistry", "subtopic": "Limiting Reagent and Stoichiometric Calculations", "suggestion": "Practice step-by-step mole-balance calculations for sequential reaction systems to build accuracy."}, {"concept": "Structure of Atom", "subtopic": "Ionization Energy and Electron Gain Enthalpy", "suggestion": "Revise periodic trend exceptions and effective nuclear charge variations across transition series."}]}}, {"paperId": "03-08-2026", "date": "03-08-2026", "dateLabel": "03 Aug 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 43, "wrong": 21, "unattempted": 11, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 67.2, "attemptRate": 85.3, "score": 151, "maxScore": 300, "rank": 61, "pctOfMax": 50.3}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 16, "wrong": 8, "unattempted": 1, "score": 55, "maxScore": 100, "subjectRank": 26, "accuracy": 66.7, "attemptRate": 96.0, "tracked": true, "pctOfMax": 55.0}, {"subject": "Chemistry", "totalQ": 25, "right": 10, "wrong": 10, "unattempted": 5, "score": 32, "maxScore": 100, "subjectRank": 258, "accuracy": 50.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 32.0}, {"subject": "Maths", "totalQ": 25, "right": 17, "wrong": 3, "unattempted": 5, "score": 64, "maxScore": 100, "subjectRank": 25, "accuracy": 85.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 64.0}], "concepts": [{"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Electronegativity Trends", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Classification of Elements and Periodicity in Properties", "subtopic": "Ionic Radii", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Disproportionation Reactions and Equivalent Weight", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Redox Reactions", "subtopic": "Equivalent Weight", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Concentration Terms", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Molarity and Stoichiometry", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Mole Concept", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Quantitative Analysis", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Some Basic Concepts of Chemistry", "subtopic": "Stoichiometry and Thermal Decomposition", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Bohr Model and Line Spectra", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Orbital Wave Functions and Radial Probability", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "Radial Nodes and Quantum Mechanics", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Structure of Atom", "subtopic": "de Broglie Wavelength", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Distance along a Given Line", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Family of Lines and Incenter", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Image of a Point in a Line", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Non-formation of Triangle by Three Lines", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Reflection and Optics", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Straight Lines", "subtopic": "Shortest Distance from a Point to a Line", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Product of Cosine Terms", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Functions", "subtopic": "Trigonometric Simplification", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Laws of Motion", "subtopic": "Equilibrium of Rigid Bodies / Contact Forces", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Laws of Motion", "subtopic": "Normal Contact Force", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Vector Addition and Resultant Angle", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Vector Components", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Physics and Mathematics", "subtopic": "Vector Products", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Rest and Motion: Kinematics", "subtopic": "Constrained Motion", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Rest and Motion: Kinematics", "subtopic": "Motion in Two Dimensions", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Units and Measurements", "subtopic": "Errors and Precision", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Units and Measurements", "subtopic": "Propagation of Errors", "wrong": 1, "unattempted": 0, "total": 1}], "errorCodes": [{"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Chemistry", "count": 2}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Chemistry", "count": 3}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 5}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Physics", "count": 3}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Solid accuracy in Mathematics yielded a strong subject rank of 25, but heavy calculation errors in Chemistry dragged down the overall rank to 61.", "strengths": ["Maths accuracy was excellent at 85.0%, delivering 64 marks and a high subject rank of 25.", "Physics attempt rate was high at 96.0% with 16 correct answers, securing a respectable subject rank of 26."], "weaknesses": ["Chemistry accuracy dropped to 50.0% with 10 incorrect answers, resulting in a subject rank of 258.", "Careless execution led to 21 total negative marks across 75 questions, severely penalty-cutting the overall score to 151."], "patternNote": "In this 180-minute 75-question format with +4/-1 marking, rushing through Chemistry resulted in 3 unattempted questions due to Lack Of Time and 2 lost to Done But Not Bubbled.", "rankNote": "While Physics (rank 26) and Maths (rank 25) put you near the top of the cohort, your Chemistry rank of 258 pulled your overall score to 151 and your overall rank down to 61.", "errorCodeNote": "The single most frequent mistake was Calculation Error (9 total occurrences), which hit Chemistry hardest with 5 errors and reveals that marks were lost to sloppy execution rather than conceptual gaps.", "conceptSuggestions": [{"concept": "Some Basic Concepts of Chemistry", "subtopic": "Molarity and Stoichiometry", "suggestion": "Practice 10 timed numerical problems on unit conversions and stoichiometric coefficients to eliminate basic arithmetic slips."}, {"concept": "Redox Reactions", "subtopic": "Disproportionation Reactions and Equivalent Weight", "suggestion": "Revisit n-factor calculations specifically for self-redox systems and write out full oxidation state balances step-by-step."}, {"concept": "Physics and Mathematics", "subtopic": "Vector Products", "suggestion": "Work through vector cross-product determinant steps explicitly rather than skipping intermediate steps in your scratchpad."}, {"concept": "Straight Lines", "subtopic": "Shortest Distance from a Point to a Line", "suggestion": "Review standard perpendicular distance formulas and double-check coordinate sign substitutions before calculating final values."}]}}, {"paperId": "17-08-2026", "date": "17-08-2026", "dateLabel": "17 Aug 2026", "pattern": "BITSAT", "totalQuestions": 130, "overall": {"right": 79, "wrong": 12, "unattempted": 9, "total": 130, "trackedTotal": 100, "untrackedSubjects": ["English", "IQ"], "accuracy": 86.8, "attemptRate": 91.0, "score": 285, "maxScore": 390, "rank": 16, "pctOfMax": 73.1}, "subjects": [{"subject": "Physics", "totalQ": 30, "right": 26, "wrong": 1, "unattempted": 3, "score": 74, "maxScore": 90, "subjectRank": 14, "accuracy": 96.3, "attemptRate": 90.0, "tracked": true, "pctOfMax": 82.2}, {"subject": "Chemistry", "totalQ": 30, "right": 21, "wrong": 9, "unattempted": 0, "score": 54, "maxScore": 90, "subjectRank": 146, "accuracy": 70.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 60.0}, {"subject": "Maths", "totalQ": 40, "right": 32, "wrong": 2, "unattempted": 6, "score": 90, "maxScore": 120, "subjectRank": 17, "accuracy": 94.1, "attemptRate": 85.0, "tracked": true, "pctOfMax": 75.0}, {"subject": "English", "totalQ": 10, "right": null, "wrong": null, "unattempted": null, "score": 26, "maxScore": 30, "subjectRank": 4, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 86.7}, {"subject": "IQ", "totalQ": 20, "right": null, "wrong": null, "unattempted": null, "score": 41, "maxScore": 60, "subjectRank": 59, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 68.3}], "concepts": [{"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Fajans' Rules", "wrong": 1, "unattempted": 0, "total": 2}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Hybridization and Geometry", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Ionic Bonding", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Ionic vs Covalent Character", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Lattice Energy", "wrong": 2, "unattempted": 0, "total": 4}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Lewis Structures and Chemical Bonds", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Lewis Structures and Valence Electrons", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Solubility of Ionic Compounds", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Matrices", "subtopic": "Matrix Multiplication and Sequences", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Matrices", "subtopic": "Matrix Products and Congruence", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Matrices", "subtopic": "Orthogonal Matrix", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Matrices", "subtopic": "Symmetric and Skew-Symmetric Matrices", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Matrices", "subtopic": "Trace of a Matrix", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Maths", "concept": "Trigonometric Equations", "subtopic": "General Solution of Trigonometric Equations", "wrong": 0, "unattempted": 2, "total": 4}, {"subject": "Maths", "concept": "Trigonometric Equations", "subtopic": "Number of Solutions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Equilibrium of Rigid Bodies", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Tension in Rope", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Vector Addition of Forces", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Work, Energy and Power", "subtopic": "Work-Energy Theorem", "wrong": 0, "unattempted": 1, "total": 1}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 4}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Physics", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 4}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 4}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Secured overall rank 16 with a score of 285/390 (73.1%), backed by exceptional accuracy in Physics (96.3%) and Maths (94.1%), but pulled down by 9 wrong answers in Chemistry.", "strengths": ["Physics performance was top-tier with a score of 74/90 (rank 14) and 96.3% accuracy across 26 correct answers.", "Maths delivered a robust 90/120 (rank 17) with 32 correct responses, anchoring the overall score in BITSAT's highest-weightage section."], "weaknesses": ["Chemistry crashed to a subject rank of 146 (54/90) due to 9 incorrect attempts out of 30 questions attempted.", "Pacing issues left 7 questions unattempted across Maths (4) and Physics (3) due to Lack Of Time."], "patternNote": "BITSAT demands high-speed execution across 130 questions in 180 minutes; while scoring 26/30 in English (rank 4) gave a strong boost, attempting 100% of Chemistry questions hastily cost 9 negative marks.", "rankNote": "Your overall rank of 16 is strong, but the sharp contrast between your Physics rank (14) and Chemistry rank (146) shows that the cohort scored much higher in Chemistry where you dropped 36 marks from the maximum score.", "errorCodeNote": "The most frequent error code was Lack Of Time (7 counts), revealing pacing pressures in late Maths and Physics subtopics such as General Solution of Trigonometric Equations and Matrix Multiplication and Sequences. Additionally, execution flaws dominated Chemistry with 4 Calculation Errors and 4 Formula Errors primarily impacting Chemical Bonding and Molecular Structure.", "conceptSuggestions": [{"concept": "Chemical Bonding and Molecular Structure", "subtopic": "Lattice Energy", "suggestion": "Revisiting Born-Haber cycles and standard lattice energy equations will help eliminate the formula and calculation errors made here."}, {"concept": "Trigonometric Equations", "subtopic": "General Solution of Trigonometric Equations", "suggestion": "Practice rapid formula application for principal and general solutions to speed up problem-solving and prevent leaving these unattempted."}, {"concept": "Chemical Bonding and Molecular Structure", "subtopic": "Fajans' Rules", "suggestion": "Review polarization, cation charge density, and anion size trends to avoid errors in determining covalent character."}, {"concept": "Matrices", "subtopic": "Orthogonal Matrix", "suggestion": "Memorize key properties like A times A-transpose equals identity and determinant equal to plus-or-minus one to solve orthogonal matrix questions without full matrix multiplication."}]}}, {"paperId": "24-08-2026", "date": "24-08-2026", "dateLabel": "24 Aug 2026", "pattern": "JEE Advanced", "totalQuestions": 51, "overall": {"right": 37, "wrong": 9, "unattempted": 5, "total": 51, "trackedTotal": 51, "untrackedSubjects": [], "accuracy": 80.4, "attemptRate": 90.2, "score": 133, "maxScore": 180, "rank": 25, "pctOfMax": 73.9}, "subjects": [{"subject": "Physics", "totalQ": 17, "right": 13, "wrong": 3, "unattempted": 1, "score": 42, "maxScore": 60, "subjectRank": 47, "accuracy": 81.2, "attemptRate": 94.1, "tracked": true, "pctOfMax": 70.0}, {"subject": "Chemistry", "totalQ": 17, "right": 11, "wrong": 4, "unattempted": 2, "score": 45, "maxScore": 60, "subjectRank": 86, "accuracy": 73.3, "attemptRate": 88.2, "tracked": true, "pctOfMax": 75.0}, {"subject": "Maths", "totalQ": 17, "right": 13, "wrong": 2, "unattempted": 2, "score": 46, "maxScore": 60, "subjectRank": 16, "accuracy": 86.7, "attemptRate": 88.2, "tracked": true, "pctOfMax": 76.7}], "concepts": [{"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Hybridization and Bonding Orbitals", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Hybridization and Geometry", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Molecular Geometry", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Molecular Orbital Theory", "wrong": 1, "unattempted": 0, "total": 3}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Octet Rule and Exceptions", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Chemistry", "concept": "Chemical Bonding and Molecular Structure", "subtopic": "Orbital Overlap", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Maths", "concept": "Matrices and Determinants", "subtopic": "Determinants", "wrong": 1, "unattempted": 0, "total": 3}, {"subject": "Maths", "concept": "Matrices and Determinants", "subtopic": "Properties of Matrices", "wrong": 1, "unattempted": 1, "total": 3}, {"subject": "Maths", "concept": "Matrices and Determinants", "subtopic": "Symmetric and Skew Symmetric Matrices", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Constrained Motion", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Constraint Motion and Tension", "wrong": 1, "unattempted": 0, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Inertial and Non-Inertial Frames", "wrong": 0, "unattempted": 1, "total": 1}, {"subject": "Physics", "concept": "Newton's Laws of Motion", "subtopic": "Infinite Pulley Systems", "wrong": 1, "unattempted": 0, "total": 1}], "errorCodes": [{"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Chemistry", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Chemistry", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Calculation Error", "subject": "Physics", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 2}], "insights": {"headline": "You secured Rank 25 with a score of 133/180 (73.9%) and an overall accuracy of 80.4% across 51 questions. Maths was your strongest area, while Chemistry precision and Physics calculation accuracy require targeted improvement.", "strengths": ["Maths was your top-performing subject, securing Subject Rank 16 with a high accuracy of 86.7% and 46/60 marks.", "Physics showed strong confidence and attempt aggressiveness with a 94.1% attempt rate (16 out of 17 questions attempted)."], "weaknesses": ["Chemistry performance lagged behind cohort standards, where a score of 45/60 resulted in a Subject Rank of 86 due to 4 wrong and 2 unattempted questions.", "Execution errors were notable across subjects, with 9 total incorrect responses eroding your final score. "], "patternNote": "In JEE Advanced pattern papers, negative marking on single-correct items penalizes avoidable mistakes heavily. Maintaining high accuracy on multi-step problems is critical to capitalising on your high 90.2% attempt rate.", "rankNote": "Your overall rank of 25 reflects strong overall capability, but subject ranks reveal key cohort dynamics: your 46 in Maths placed you 16th, whereas a comparable 45 in Chemistry fell to 86th place. Balancing performance across all three subjects will significantly boost your overall standing.", "errorCodeNote": "The most frequent error code was Calculation Error with 7 instances (3 in Physics, 2 in Chemistry, 2 in Maths), proving that lost marks were primarily driven by execution slips rather than conceptual ignorance. This issue hit Physics hardest in Newton's Laws of Motion subtopics like Infinite Pulley Systems and Constrained Motion.", "conceptSuggestions": [{"concept": "Chemical Bonding and Molecular Structure", "subtopic": "Molecular Orbital Theory", "suggestion": "Review molecular orbital energy diagrams and practice bond-order calculation shortcuts for heteronuclear diatomic molecules."}, {"concept": "Matrices and Determinants", "subtopic": "Properties of Matrices", "suggestion": "Re-derive standard adjoint and determinant identities to avoid getting stuck or misapplying rules during matrix manipulations."}, {"concept": "Newton's Laws of Motion", "subtopic": "Infinite Pulley Systems", "suggestion": "Solve step-by-step recursive tension equations for infinite pulley setups to eliminate calculation errors under time pressure."}]}}], "overallInsights": {"headline": "Solid JEE Advanced stability around Rank 25 (133/180 on 24 Aug), but JEE Main volatile due to calculation spikes (151/300 on 03 Aug).", "strengths": ["Strong JEE Advanced core performance, reaching Rank 22 (140/186) on 20 Jul and Rank 25 (133/180) on 24 Aug.", "Peak JEE Main mastery demonstrated on 13 Jul with 270/300 (Rank 14) and 92% accuracy.", "High attempt rate above 87% maintained across JEE Advanced papers with accuracy reaching 80.4% on 24 Aug."], "weaknesses": ["Execution collapses in JEE Main, dropping to Rank 61 (151/300) on 03 Aug due to 21 unforced errors.", "Recurring calculation errors in Chemistry physical subtopics like Equivalent Weight and Molarity.", "Conceptual blockages in Maths subtopics under pressure, leading to 5 No Idea Flashed instances on 27 Jul P1."], "patternNote": ["JEE Main accuracy swung from 92% (13 Jul) down to 67.2% (03 Aug).", "JEE Advanced attempt rate stayed high (74-92%), recovering to 80.4% accuracy on 24 Aug.", "BITSAT tested speed over depth, maintaining ~86% accuracy with 7-9 unattempted due to time."], "rankNote": ["JEE Advanced rank stabilized near top 25, moving from Rank 31 to 25 on 24 Aug.", "JEE Main rank swung drastically from Rank 14 (270/300) down to Rank 61 (151/300).", "Ranks compare within specific test cohorts only, making cross-pattern direct score comparisons misleading."], "errorCodeNote": ["Calculation Error dominated with 30+ occurrences, hitting Chemistry numerical subtopics like Molarity hardest.", "Formula Error caused 20+ lost questions, recurring in Physics Kinematics and Atomic Structure.", "No Idea Flashed triggered 18 unattempted Maths questions, concentrated in JEE Advanced papers."], "conceptSuggestions": [{"concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle", "suggestion": "Revisit quantum mechanical equations and practice multi-step numericals to eliminate calculation and formula mistakes across tests."}, {"concept": "Redox Reactions", "subtopic": "Equivalent Weight", "suggestion": "Master n-factor calculations and titration stoichiometry to stop recurring physical chemistry calculation errors."}, {"concept": "Newton's Laws of Motion", "subtopic": "Constrained Motion", "suggestion": "Practice pulley and string constraint relations for JEE Advanced level multi-body system problems."}, {"concept": "Straight Lines", "subtopic": "Locus and Transformation of Axes", "suggestion": "Work on coordinate geometry manipulation strategies to turn 'No Idea Flashed' unattempted questions into attempts."}]}, "physicsInsights": {"weaknesses": ["In 'Motion in a Plane' under 'Projectile Motion', you accumulated 3 wrong answers across tests like 13-07-2026 (1 wrong out of 12) and 20-07-2026P1 (2 wrong out of 7), indicating instability in handling trajectory equations under advanced constraints.", "In 'Newton's Laws of Motion' under 'Constrained Motion', you logged mistakes in both 03-08-2026 (1 wrong) and 24-08-2026 (2 wrong across Constrained Motion and Constraint Motion and Tension), consistently failing to establish correct acceleration relationships.", "In 'Units and Dimensions' under 'Dimensional Analysis', you dropped questions across three separate papers (06-07-2026, 27-07-2026P1, and 27-07-2026P2), exposing recurring slip-ups in fundamental dimension derivations.", "In 'Physics and Mathematics' under vector subtopics like 'Vector Components', 'Vector Products', and 'Vector Addition', you suffered 3 incorrect attempts in the 03-08-2026 JEE Main test alone, where your score dropped to 55/100 and subject rank fell to 26."], "errorCodeNote": "Your diagnostic log is heavily dominated by execution and careless errors rather than conceptual absence, led by Calculation Error (WCE) with 15 total instances and Formula Error (WFE) with 11 instances across the ten tests. This execution breakdown hit hardest in papers like 27-07-2026P1 (4 WCE, 2 WFE) and 03-08-2026 (3 WCE, 2 WFE, 3 WIR), severely damaging your score to 38/62 and 55/100 respectively. The mistakes hit 'Rest and Motion : Kinematics' and 'Units and Measurements' most heavily, where intermediate algebraic steps were rushed. To eliminate these 26 combined execution penalties, you must write out explicit unit conversions on paper and perform a 10-second sanity check on numerical results before bubbling.", "conceptSuggestions": [{"concept": "Motion in a Plane", "subtopic": "Projectile Motion", "suggestion": "Re-derive parametric trajectory equations vectorially and solve 15 advanced problems focusing on projectile motion on inclined planes and ground-to-air launch vectors."}, {"concept": "Units and Dimensions", "subtopic": "Dimensional Analysis", "suggestion": "Create a drill sheet of 20 high-frequency physical constants (e.g., permeability, Stefan constant) and practice dimensional balance checks for complex empirical expressions."}, {"concept": "Newton's Laws of Motion", "subtopic": "Constrained Motion", "suggestion": "Master the virtual work method (sum of T dot x equals zero) for multi-pulley systems to reliably determine string constraints and acceleration ratios without sign errors."}, {"concept": "Rest and Motion : Kinematics", "subtopic": "Graphical Analysis of Motion", "suggestion": "Practice transforming velocity-position (v-x) and acceleration-position (a-x) graphs into v-t graphs, verifying mathematical continuity at turning points."}]}, "chemistryInsights": {"weaknesses": ["In 'Redox Reactions' under 'Equivalent Weight', you dropped 2 out of 3 questions on 22 Jun 2026 (paper 22-06-2026), 1 on 27 Jul 2026 Paper 1, and another on 03 Aug 2026, showing persistent errors in determining n-factors during titration calculations.", "In 'Structure of Atom' under 'Heisenberg Uncertainty Principle', you committed 3 wrong attempts out of 5 questions on 13 Jul 2026 (score 80/100, rank 159) and left 1 unattempted on 03 Aug 2026.", "In 'Chemical Bonding and Molecular Structure' under 'Lattice Energy' and 'Hybridization and Geometry', you recorded 2 wrong out of 4 on 17 Aug 2026 (BITSAT) and repeat mistakes on 24 Aug 2026, dropping accuracy to 73.3%.", "In 'Some Basic Concepts of Chemistry' under 'Normality', you lost points across multiple papers including 15 Jun 2026 (1 wrong, 3 unattempted related subtopics) and 03 Aug 2026 where overall test accuracy fell to 50.0% with a score of 32/100."], "errorCodeNote": "Across the ten tests, execution errors dominate your performance loss, led by Calculation Error (WCE) with 27 total instances (peak counts of 5 on 22 Jun 2026, 5 on 03 Aug 2026, and 4 on 17 Aug 2026) alongside Formula Error (WFE) with 19 total instances. This execution-heavy pattern hits physical chemistry quantitative subtopics hardest, particularly Redox Reactions ('Equivalent Weight') and Structure of Atom ('Heisenberg Uncertainty Principle'). Rather than lacking raw theory, your score drops\u2014such as falling to 32/100 (rank 258) on 03 Aug 2026\u2014stem from misapplying quantitative formulas and arithmetic slips during multi-step numerical solving. To fix this, you must implement step-by-step units-and-dimensions checks and maintain a dedicated formula flashcard routine before timed tests.", "conceptSuggestions": [{"concept": "Redox Reactions", "subtopic": "Equivalent Weight", "suggestion": "Practice 15 targeted numerical problems specifically calculating n-factors for disproportionation reactions and acidic/basic medium titrations to eliminate WCE and WFE errors."}, {"concept": "Structure of Atom", "subtopic": "Heisenberg Uncertainty Principle", "suggestion": "Re-derive the uncertainty relation delta(x) * delta(p) >= h / 4pi with explicit conversion of mass and velocity uncertainties to eliminate calculation slips seen on 13 Jul and 03 Aug."}, {"concept": "Chemical Bonding and Molecular Structure", "subtopic": "Hybridization and Geometry", "suggestion": "Build a quick-reference table for steric numbers including lone pair distortions for VSEPR theory, verifying geometries for molecules tested in the 17 Aug and 24 Aug papers."}, {"concept": "Some Basic Concepts of Chemistry", "subtopic": "Normality", "suggestion": "Work through 10 volumetric analysis problems connecting Normality = Molarity * n-factor to solidify concentration conversions that led to unattempted and wrong questions across 15 Jun and 03 Aug."}, {"concept": "Chemical Bonding and Molecular Structure", "subtopic": "Lattice Energy", "suggestion": "Review Born-Haber cycle steps and electrostatic scaling factors (charge product over ionic radii sum) to correct multi-option conceptual choices from the 17 Aug BITSAT paper."}]}, "mathsInsights": {"weaknesses": ["In Sequences and Series (subtopic: Infinite Series), you struggled in paper 15-06-2026 with 2 wrong answers and 1 unattempted question out of 5 total, showing vulnerability in convergence criteria and infinite sums.", "In Trigonometric Functions (subtopic: Trigonometric Identities), paper 06-07-2026 saw 2 wrong and 2 unattempted questions out of 12 total, pointing to gaps in multi-step identity simplifications.", "In Trigonometric Equations (subtopic: General Solution of Trigonometric Equations), paper 17-08-2026 recorded 2 unattempted questions out of 4 total, highlighting procedural hesitation when finding complete solution sets."], "errorCodeNote": "The most recurring error code across all ten tests is No Idea Flashed (NNIF) with 24 total occurrences, peaking in papers 27-07-2026P1 (5 counts) and 27-07-2026P2 (4 counts), accompanied by Lack Of Time (NLOT) with 16 occurrences. This reflects a dominant pattern of conceptual hesitation and pacing bottlenecks rather than simple careless execution, hitting subtopics in Straight Lines and Trigonometric Functions hardest. To overcome this, focus revision on timed problem-recognition drills that train immediate identification of initial solving steps.", "conceptSuggestions": [{"concept": "Trigonometric Functions", "subtopic": "Maximum and Minimum Values", "suggestion": "Practice standard transformations into single-sine form a*sin(x) + b*cos(x) and evaluate quadratic trig bounds on restricted domains across JEE Advanced papers."}, {"concept": "Sequences and Series", "subtopic": "Infinite Series", "suggestion": "Work through 15 targeted problems involving telescoping series and Arithmetico-Geometric Progressions (AGP) to build speed with infinite summation formulas."}, {"concept": "The Straight Lines", "subtopic": "Locus", "suggestion": "Re-solve locus problems by explicitly setting moving point coordinates as (h,k), establishing geometric conditions, and systematically eliminating arbitrary parameters."}, {"concept": "Trigonometric Equations", "subtopic": "General Solution of Trigonometric Equations", "suggestion": "Drill factorized trigonometric equations and verify extraneous root exclusions on specified intervals like [0, 2pi]."}]}}</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("dashboard-data").textContent);
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  var SUBJECT_VAR = { Physics: "phy", Chemistry: "chem", Maths: "math", English: "eng", IQ: "iq" };
+  var SUBJECT_HEX_LIGHT = { Physics: "#2a78d6", Chemistry: "#eb6834", Maths: "#1baf7a", English: "#c9930a", IQ: "#c05a86" };
+  var SUBJECT_ORDER = ["Physics", "Chemistry", "Maths", "English", "IQ"];
+  var PATTERN_VAR = { "JEE Main": "accent", "JEE Advanced": "advanced", "BITSAT": "bitsat" };
+  var PATTERN_SHAPE = { "JEE Main": "circle", "JEE Advanced": "square", "BITSAT": "triangle" };
+  var PATTERN_BADGE_CLASS = { "JEE Main": "main", "JEE Advanced": "advanced", "BITSAT": "bitsat" };
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "class") node.className = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+  function text(tag, className, str) {
+    var n = el(tag, { class: className || "" });
+    n.textContent = str;
+    return n;
+  }
+  function svg(tag, attrs) {
+    var node = document.createElementNS(SVGNS, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+    return node;
+  }
+  function fmtPct(v) { return v === null || v === undefined ? "—" : (Math.round(v * 10) / 10) + "%"; }
+  function accClass(acc) { if (acc === null || acc === undefined) return "na"; return acc >= 85 ? "good" : acc >= 60 ? "warn" : "bad"; }
+
+  var ttEl = document.getElementById("tooltip");
+  function showTooltip(x, y, titleText, rows) {
+    ttEl.innerHTML = "";
+    var title = el("div", { class: "tt-title" }); title.textContent = titleText; ttEl.appendChild(title);
+    rows.forEach(function (r) {
+      var row = el("div", { class: "tt-row" });
+      var key = el("div", { class: "tt-key" });
+      if (r.color) { var sw = el("span", { class: "tt-swatch" }); sw.style.background = r.color; key.appendChild(sw); }
+      var kt = document.createElement("span"); kt.textContent = r.label; key.appendChild(kt);
+      var val = el("span", { class: "tt-val" }); val.textContent = r.value;
+      row.appendChild(key); row.appendChild(val); ttEl.appendChild(row);
+    });
+    ttEl.style.left = x + "px"; ttEl.style.top = y + "px"; ttEl.classList.add("show");
+  }
+  function hideTooltip() { ttEl.classList.remove("show"); }
+
+  var LEGEND_SWATCH_CLASS = {
+    line: "legend-line", dot: "legend-dot", circle: "legend-dot",
+    square: "legend-square", triangle: "legend-triangle",
+  };
+  function legendItem(color, label, kind) {
+    var item = el("div", { class: "legend-item" });
+    var sw = el("span", { class: LEGEND_SWATCH_CLASS[kind] || "legend-swatch" });
+    sw.style.background = color;
+    item.appendChild(sw);
+    var lab = document.createElement("span"); lab.textContent = label; item.appendChild(lab);
+    return item;
+  }
+
+  // ---------------- Marker shapes for line-chart data points ----------------
+  function drawMarker(shape, cx, cy, r, fill, strokeWidth) {
+    var attrs = { fill: fill, stroke: "var(--surface)", "stroke-width": strokeWidth };
+    if (shape === "square") {
+      var side = r * 1.7;
+      return svg("rect", Object.assign({ x: cx - side / 2, y: cy - side / 2, width: side, height: side, rx: 2 }, attrs));
+    }
+    if (shape === "triangle") {
+      var R = r * 1.25;
+      var pts = [
+        [cx, cy - R],
+        [cx + R * 0.866, cy + R * 0.5],
+        [cx - R * 0.866, cy + R * 0.5],
+      ].map(function (p) { return p[0].toFixed(2) + "," + p[1].toFixed(2); }).join(" ");
+      return svg("polygon", Object.assign({ points: pts }, attrs));
+    }
+    return svg("circle", Object.assign({ cx: cx, cy: cy, r: r }, attrs));
+  }
+
+  // ---------------- Subject score/max bar chart (handles untracked) ----------------
+  function subjectScoreChart(container, subjects) {
+    var W = 560, H = 260, padL = 46, padR = 10, padT = 34, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Score by subject" });
+    var n = subjects.length, bw = plotW / n * 0.5;
+    var maxVal = Math.max.apply(null, subjects.map(function (r) { return r.maxScore || 0; })) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxVal * f);
+      s.appendChild(lab);
+    });
+    subjects.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var val = row.score || 0;
+      var h = Math.max(2, plotH * (val / maxVal));
+      var x = cx - bw / 2, y = padT + plotH - h;
+      var color = "var(--" + SUBJECT_VAR[row.subject] + ")";
+      var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, rx: 4, fill: color });
+      s.appendChild(rect);
+      var vlab = svg("text", { class: "bar-value", x: cx, y: y - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      vlab.textContent = val + "/" + row.maxScore;
+      s.appendChild(vlab);
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject + (row.tracked ? "" : " *");
+      s.appendChild(clab);
+      var hit = svg("rect", { class: "hit-target", x: cx - plotW / n / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        rect.classList.add("hovered");
+        var pt = evt.touches ? evt.touches[0] : evt;
+        var rows = [
+          { label: "Score", value: val + " / " + row.maxScore, color: color },
+          { label: "% of max", value: fmtPct(row.pctOfMax) },
+        ];
+        if (row.subjectRank !== null && row.subjectRank !== undefined) rows.push({ label: "Subject rank", value: "#" + row.subjectRank });
+        if (row.tracked) rows.push({ label: "Right / Wrong / Unatt.", value: row.right + " / " + row.wrong + " / " + row.unattempted });
+        else rows.push({ label: "Detail", value: "not tracked" });
+        showTooltip(pt.clientX, pt.clientY, row.subject, rows);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+    });
+    container.appendChild(s);
+    if (subjects.some(function (r) { return !r.tracked; })) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "* score/rank is real; question-level right/wrong detail isn't tracked for this section in the source data.")]));
+    }
+  }
+
+  // ---------------- Rank by subject (lower bar = better rank) ----------------
+  function subjectRankChart(container, subjects, overallRank) {
+    var ranked = subjects.filter(function (r) { return r.subjectRank !== null && r.subjectRank !== undefined; });
+    if (!ranked.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "No per-subject rank reported for this test.")]));
+      return;
+    }
+    var hasOverall = overallRank !== null && overallRank !== undefined;
+    var W = 560, H = 260, padL = 46, padR = 10, padT = 34, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Rank by subject" });
+    var n = ranked.length, bw = plotW / n * 0.5;
+    var vals = ranked.map(function (r) { return r.subjectRank; });
+    if (hasOverall) vals.push(overallRank);
+    var maxVal = Math.max.apply(null, vals) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxVal * f);
+      s.appendChild(lab);
+    });
+    ranked.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var val = row.subjectRank;
+      var h = Math.max(2, plotH * (val / maxVal));
+      var x = cx - bw / 2, y = padT + plotH - h;
+      var color = "var(--" + SUBJECT_VAR[row.subject] + ")";
+      var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, rx: 4, fill: color });
+      s.appendChild(rect);
+      var vlab = svg("text", { class: "bar-value", x: cx, y: y - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      vlab.textContent = "#" + val;
+      s.appendChild(vlab);
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject;
+      s.appendChild(clab);
+      var hit = svg("rect", { class: "hit-target", x: cx - plotW / n / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        rect.classList.add("hovered");
+        var pt = evt.touches ? evt.touches[0] : evt;
+        showTooltip(pt.clientX, pt.clientY, row.subject, [
+          { label: "Rank", value: "#" + val, color: color },
+          { label: "Score", value: row.score + " / " + row.maxScore },
+        ]);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+    });
+    if (hasOverall) {
+      var ly = padT + plotH - plotH * (overallRank / maxVal);
+      s.appendChild(svg("line", {
+        x1: padL, x2: W - padR, y1: ly, y2: ly,
+        stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "6,4",
+      }));
+      var labelText = "Overall #" + overallRank;
+      var estW = labelText.length * 7.4 + 10;
+      var lx = W - padR, ltY = ly - 8;
+      s.appendChild(svg("rect", {
+        x: lx - estW, y: ltY - 13, width: estW, height: 18, rx: 4,
+        fill: "var(--surface)", stroke: "var(--hairline-2)", "stroke-width": 1,
+      }));
+      var llab = svg("text", {
+        x: lx - 6, y: ltY, "text-anchor": "end",
+        style: "font-size:13px;font-weight:700;fill:var(--ink-2);",
+      });
+      llab.textContent = labelText;
+      s.appendChild(llab);
+    }
+    container.appendChild(s);
+    container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("Lower bar = better rank." + (hasOverall ? " Dashed line = overall rank." : ""))]));
+    if (ranked.length < subjects.length) {
+      var missing = subjects.filter(function (r) { return r.subjectRank === null || r.subjectRank === undefined; }).map(function (r) { return r.subject; }).join(", ");
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("No rank reported for: " + missing)]));
+    }
+  }
+
+  // ---------------- Right/Wrong/Unattempted stacked bar (tracked subjects only) ----------------
+  function statusStackChart(container, subjects) {
+    var tracked = subjects.filter(function (r) { return r.tracked; });
+    if (!tracked.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "No question-level mistake tracking available for this test's subjects.")]));
+      return;
+    }
+    var W = 560, H = 260, padL = 40, padR = 10, padT = 20, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Right, wrong, unattempted by subject" });
+    var n = tracked.length, bw = plotW / n * 0.5;
+    var maxTotal = Math.max.apply(null, tracked.map(function (r) { return r.totalQ; })) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxTotal * f);
+      s.appendChild(lab);
+    });
+    var order = [["right", "Right", "good"], ["wrong", "Wrong", "critical"], ["unattempted", "Unattempted", "muted-status"]];
+    tracked.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var x = cx - bw / 2;
+      var yCursor = padT + plotH;
+      order.forEach(function (spec) {
+        var key = spec[0], val = row[key];
+        var h = plotH * (val / maxTotal);
+        if (h <= 0) return;
+        var y = yCursor - h;
+        var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, fill: "var(--" + spec[2] + ")" });
+        s.appendChild(rect);
+        var hit = svg("rect", { class: "hit-target", x: x, y: y, width: bw, height: h });
+        s.appendChild(hit);
+        (function (label, val, rect) {
+          function activate(evt) {
+            rect.classList.add("hovered");
+            var pt = evt.touches ? evt.touches[0] : evt;
+            showTooltip(pt.clientX, pt.clientY, row.subject + " — " + label, [{ label: "Questions", value: val + " of " + row.totalQ }]);
+          }
+          hit.addEventListener("pointermove", activate);
+          hit.addEventListener("pointerenter", activate);
+          hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+          hit.setAttribute("tabindex", "0");
+          hit.addEventListener("focus", activate);
+          hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+        })(spec[1], val, rect);
+        yCursor = y - 2;
+      });
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject;
+      s.appendChild(clab);
+    });
+    container.appendChild(s);
+    container.appendChild(el("div", { class: "legend" }, [
+      legendItem("var(--good)", "Right", "sw"), legendItem("var(--critical)", "Wrong", "sw"), legendItem("var(--muted-status)", "Unattempted", "sw")
+    ]));
+    if (tracked.length < subjects.length) {
+      var missing = subjects.filter(function (r) { return !r.tracked; }).map(function (r) { return r.subject; }).join(", ");
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("Not shown (untracked): " + missing)]));
+    }
+  }
+
+  // ---------------- Generic line chart (supports per-point pattern-colored markers) ----------------
+  function lineChart(container, xLabels, series, opts) {
+    opts = opts || {};
+    var W = 1080, H = 260, padL = opts.padL || 42, padR = opts.padR || 16, padT = 20, padB = 34;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": opts.ariaLabel || "Trend chart" });
+    var allVals = [];
+    series.forEach(function (sr) { sr.values.forEach(function (v) { if (v !== null && v !== undefined) allVals.push(v); }); });
+    var invert = !!opts.invert;
+    var minV = opts.min !== undefined ? opts.min : Math.min(0, Math.min.apply(null, allVals));
+    var maxV = opts.max !== undefined ? opts.max : Math.max.apply(null, allVals) * 1.15;
+    var n = xLabels.length;
+    function xAt(i) { return padL + (n === 1 ? plotW / 2 : plotW * i / (n - 1)); }
+    function yAt(v) {
+      var f = (v - minV) / (maxV - minV || 1);
+      if (invert) f = 1 - f;
+      return padT + plotH * (1 - f);
+    }
+    (opts.yTicks || [0, 0.25, 0.5, 0.75, 1]).forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 && !invert ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var val = minV + (maxV - minV) * f;
+      var labAttrs = { class: "axis-label", x: padL - 8, y: y + 3, "text-anchor": "end" };
+      var labStyle = "";
+      if (opts.yAxisFontSize) labStyle += "font-size:" + opts.yAxisFontSize + "px;";
+      if (opts.yAxisFill) labStyle += "fill:" + opts.yAxisFill + ";";
+      if (labStyle) labAttrs.style = labStyle;
+      var lab = svg("text", labAttrs);
+      lab.textContent = Math.round(val) + (opts.suffix || "");
+      s.appendChild(lab);
+    });
+    xLabels.forEach(function (lab, i) {
+      var xAttrs = { class: "cat-label", x: xAt(i), y: H - 8, "text-anchor": "middle" };
+      var xStyle = "";
+      if (opts.xAxisFontSize) xStyle += "font-size:" + opts.xAxisFontSize + "px;";
+      if (opts.xAxisFill) xStyle += "fill:" + opts.xAxisFill + ";";
+      if (xStyle) xAttrs.style = xStyle;
+      var t = svg("text", xAttrs);
+      t.textContent = lab;
+      s.appendChild(t);
+    });
+    var crosshair = svg("line", { class: "crosshair", x1: 0, x2: 0, y1: padT, y2: padT + plotH });
+    s.appendChild(crosshair);
+
+    series.forEach(function (sr) {
+      var d = "";
+      sr.values.forEach(function (v, i) { if (v === null || v === undefined) return; d += (d ? "L" : "M") + xAt(i) + "," + yAt(v) + " "; });
+      s.appendChild(svg("path", { class: "line-mark", d: d, stroke: sr.color || "var(--ink-3)" }));
+      sr.values.forEach(function (v, i) {
+        if (v === null || v === undefined) return;
+        var markerColor = (sr.pointColors && sr.pointColors[i]) || sr.color || "var(--ink-3)";
+        var shape = (sr.pointShapes && sr.pointShapes[i]) || "circle";
+        var dotR = opts.dotRadius || 4.5;
+        s.appendChild(drawMarker(shape, xAt(i), yAt(v), dotR, markerColor, dotR > 4.5 ? 2 : 1.5));
+      });
+    });
+
+    xLabels.forEach(function (lab, i) {
+      var hit = svg("rect", { class: "hit-target", x: xAt(i) - (plotW / n) / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        crosshair.setAttribute("x1", xAt(i)); crosshair.setAttribute("x2", xAt(i)); crosshair.style.opacity = 1;
+        var pt = evt.touches ? evt.touches[0] : evt;
+        var rows = series.map(function (sr) {
+          var v = sr.values[i];
+          var value = v === null || v === undefined ? "—" : (opts.valueFmt ? opts.valueFmt(v, i) : v);
+          var color = (sr.pointColors && sr.pointColors[i]) || sr.color;
+          return { label: sr.name, color: color, value: value };
+        });
+        showTooltip(pt.clientX, pt.clientY, opts.titleFmt ? opts.titleFmt(i) : lab, rows);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { crosshair.style.opacity = 0; hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { crosshair.style.opacity = 0; hideTooltip(); });
+    });
+
+    container.appendChild(s);
+    var legendClass = "legend" + (opts.smallLegend ? " legend-sm" : "");
+    if (opts.legend) {
+      var legend = el("div", { class: legendClass });
+      opts.legend.forEach(function (l) { legend.appendChild(legendItem(l.color, l.label, l.kind || "line")); });
+      container.appendChild(legend);
+    } else if (series.length > 1) {
+      var legend2 = el("div", { class: legendClass });
+      series.forEach(function (sr) { legend2.appendChild(legendItem(sr.color, sr.name, "line")); });
+      container.appendChild(legend2);
+    }
+  }
+
+  // ---------------- Horizontal bar: weak concepts ----------------
+  // ---------------- Error code breakdown (vertical stacked: x = error code, color = subject) ----------------
+  function errorCodeChart(container, errorCodes, opts) {
+    opts = opts || {};
+    if (!errorCodes || !errorCodes.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("No error codes logged for this test.")]));
+      return;
+    }
+    var byCode = {};
+    errorCodes.forEach(function (r) {
+      if (!byCode[r.code]) byCode[r.code] = { code: r.code, label: r.label, total: 0, bySubject: {} };
+      byCode[r.code].total += r.count;
+      byCode[r.code].bySubject[r.subject] = (byCode[r.code].bySubject[r.subject] || 0) + r.count;
+    });
+    var codes = Object.values(byCode).sort(function (a, b) { return b.total - a.total; });
+    var subjectsPresent = SUBJECT_ORDER.filter(function (subj) { return codes.some(function (c) { return c.bySubject[subj]; }); });
+
+    var padL = opts.padL || 42, padR = opts.padR || 16;
+    var W = 1080, H = opts.H || 280, padT = 16, padB = opts.padB || 36;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var n = codes.length, bw = plotW / n * 0.5;
+    var maxTotal = Math.max.apply(null, codes.map(function (c) { return c.total; })) || 1;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Mistakes by error code, colored by subject" });
+    var yStyle = "";
+    if (opts.yAxisFontSize) yStyle += "font-size:" + opts.yAxisFontSize + "px;";
+    if (opts.yAxisFill) yStyle += "fill:" + opts.yAxisFill + ";";
+    var xStyle = opts.xAxisFontSize ? "font-size:" + opts.xAxisFontSize + "px;" : "";
+    if (opts.xAxisBold) xStyle += "font-weight:700;";
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var labAttrs = { class: "axis-label", x: padL - 8, y: y + 3, "text-anchor": "end" };
+      if (yStyle) labAttrs.style = yStyle;
+      var lab = svg("text", labAttrs);
+      lab.textContent = Math.round(maxTotal * f);
+      s.appendChild(lab);
+    });
+    codes.forEach(function (c, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var x = cx - bw / 2;
+      var yCursor = padT + plotH;
+      subjectsPresent.forEach(function (subj) {
+        var val = c.bySubject[subj];
+        if (!val) return;
+        var h = plotH * (val / maxTotal);
+        var y = yCursor - h;
+        var color = "var(--" + SUBJECT_VAR[subj] + ")";
+        var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, fill: color });
+        s.appendChild(rect);
+        var hit = svg("rect", { class: "hit-target", x: x, y: y, width: bw, height: h });
+        s.appendChild(hit);
+        (function (subj, val, rect, color) {
+          function activate(evt) {
+            rect.classList.add("hovered");
+            var pt = evt.touches ? evt.touches[0] : evt;
+            showTooltip(pt.clientX, pt.clientY, c.label + " (" + c.code + ")", [{ label: subj, value: val, color: color }]);
+          }
+          hit.addEventListener("pointermove", activate);
+          hit.addEventListener("pointerenter", activate);
+          hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+          hit.setAttribute("tabindex", "0");
+          hit.addEventListener("focus", activate);
+          hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+        })(subj, val, rect, color);
+        yCursor = y - 2;
+      });
+      var vlab = svg("text", { class: "bar-value", x: cx, y: padT + plotH - plotH * (c.total / maxTotal) - 10, "text-anchor": "middle", style: "font-size:22px;fill:var(--ink-1);font-weight:800;" });
+      vlab.textContent = c.total;
+      s.appendChild(vlab);
+      var clab1Attrs = { class: "cat-label", x: cx, y: H - padB + (opts.labelGap || 18), "text-anchor": "middle" };
+      if (xStyle) clab1Attrs.style = xStyle;
+      var clab1 = svg("text", clab1Attrs);
+      clab1.textContent = c.code;
+      s.appendChild(clab1);
+    });
+    container.appendChild(s);
+    var legend = el("div", { class: "legend" });
+    subjectsPresent.forEach(function (subj) { legend.appendChild(legendItem("var(--" + SUBJECT_VAR[subj] + ")", subj, "sw")); });
+    container.appendChild(legend);
+    var keyText = codes.map(function (c) { return c.code + " = " + c.label; }).join("  ·  ");
+    container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(keyText)]));
+  }
+
+  function kpiRow(items) {
+    var row = el("div", { class: "kpi-row", style: "--kpi-cols: " + items.length + ";" });
+    items.forEach(function (it) {
+      var v = el("div", { class: "v num" + (it.cls ? " " + it.cls : "") });
+      v.textContent = it.value;
+      row.appendChild(el("div", { class: "kpi" }, [v, text("div", "l", it.label)]));
+    });
+    return row;
+  }
+
+  function noteBody(value) {
+    if (Array.isArray(value)) {
+      var ul = el("ul", { class: "note-bullets" });
+      value.forEach(function (t) { ul.appendChild(text("li", "", t)); });
+      return ul;
+    }
+    var span = document.createElement("span");
+    span.textContent = value;
+    return span;
+  }
+
+  function remarksBlock(insights, patternLabel, titleOverride, hideErrorCodeTag) {
+    if (!insights) return null;
+    var wrap = el("div", { class: "remarks" });
+    wrap.appendChild(el("div", { class: "remarks-head" }, [
+      text("span", "eyebrow", titleOverride || "Examiner's Remarks"),
+      text("span", "powered", "(AI-Generated)")
+    ]));
+    if (insights.headline) wrap.appendChild(text("h3", "headline", insights.headline));
+
+    if (insights.strengths && insights.strengths.length) {
+      var grid = el("div", { class: "remarks-grid" });
+      var sCol = el("div", { class: "remarks-col" }, [text("h4", "", "Strengths")]);
+      var sList = el("ul", { class: "strengths" });
+      insights.strengths.forEach(function (t) { sList.appendChild(text("li", "", t)); });
+      sCol.appendChild(sList);
+      var wCol = el("div", { class: "remarks-col" }, [text("h4", "", "Needs Work")]);
+      var wList = el("ul", { class: "weaknesses" });
+      (insights.weaknesses || []).forEach(function (t) { wList.appendChild(text("li", "", t)); });
+      wCol.appendChild(wList);
+      grid.appendChild(sCol); grid.appendChild(wCol);
+      wrap.appendChild(grid);
+    }
+
+    if (insights.patternNote) {
+      var patternTag = patternLabel === "Cross-Pattern" ? "Cross-Pattern Exam Note" : patternLabel + " Pattern Note";
+      var pn = el("div", { class: "note-block" }, [text("span", "tag", patternTag), noteBody(insights.patternNote)]);
+      wrap.appendChild(pn);
+    }
+    if (insights.rankNote) {
+      var rn = el("div", { class: "note-block rank" }, [text("span", "tag", "Rank Note"), noteBody(insights.rankNote)]);
+      wrap.appendChild(rn);
+    }
+    if (insights.errorCodeNote) {
+      var enChildren = hideErrorCodeTag ? [noteBody(insights.errorCodeNote)] : [text("span", "tag", "Error Code Note"), noteBody(insights.errorCodeNote)];
+      var en = el("div", { class: "note-block errorcode" }, enChildren);
+      wrap.appendChild(en);
+    }
+
+    if (insights.conceptSuggestions && insights.conceptSuggestions.length) {
+      wrap.appendChild(text("h4", "", "Concept-level Suggestions"));
+      var csWrap = el("div", { class: "concept-suggest" });
+      insights.conceptSuggestions.forEach(function (c) {
+        var nameLabel = c.subtopic ? c.concept + " — " + c.subtopic : c.concept;
+        csWrap.appendChild(el("div", { class: "cs-item" }, [text("div", "cs-name", nameLabel), text("div", "cs-text", c.suggestion)]));
+      });
+      wrap.appendChild(csWrap);
+    }
+    return wrap;
+  }
+
+  function conceptTable(concepts, hideSubject) {
+    var card = el("div", { class: "table-card table-card-flush concept-table-card" });
+    card.appendChild(text("div", "table-card-title", "Concept-level Mistakes"));
+    var currentSort = { key: "wrong", dir: -1 };
+    var table = el("table", { class: "data-table concept-grouped-table" });
+    var thead = el("thead");
+    var cols = [
+      { key: "concept", label: "Concept" }, { key: "subject", label: "Subject" },
+      { key: "wrong", label: "Wrong", num: true }, { key: "unattempted", label: "Unatt.", num: true },
+    ];
+    if (hideSubject) cols = cols.filter(function (c) { return c.key !== "subject"; });
+    var trh = el("tr");
+    cols.forEach(function (c) {
+      var th = el("th", { class: c.num ? "num" : "" });
+      th.textContent = c.label;
+      th.addEventListener("click", function () {
+        currentSort.dir = currentSort.key === c.key ? -currentSort.dir : -1;
+        currentSort.key = c.key;
+        render();
+      });
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    table.appendChild(thead);
+    var tbody = el("tbody");
+    table.appendChild(tbody);
+
+    // Group the (concept, subtopic) rows by concept+subject so the table shows one row
+    // per topic, with an expandable dropdown revealing the subtopic-level breakdown.
+    var groups = {};
+    var groupOrder = [];
+    concepts.forEach(function (r) {
+      var key = r.concept + "||" + r.subject;
+      if (!groups[key]) {
+        groups[key] = { concept: r.concept, subject: r.subject, wrong: 0, unattempted: 0, total: 0, subtopics: [] };
+        groupOrder.push(key);
+      }
+      groups[key].wrong += r.wrong;
+      groups[key].unattempted += r.unattempted;
+      groups[key].total += (r.total || 0);
+      groups[key].subtopics.push(r);
+    });
+    var openKeys = {};
+
+    function render() {
+      var rows = groupOrder.map(function (k) { return groups[k]; }).sort(function (a, b) {
+        var av = a[currentSort.key], bv = b[currentSort.key];
+        if (typeof av === "string") return av.localeCompare(bv) * currentSort.dir;
+        return (av - bv) * currentSort.dir;
+      });
+      tbody.innerHTML = "";
+      rows.forEach(function (g) {
+        var key = g.concept + "||" + g.subject;
+        var isOpen = !!openKeys[key];
+        var tr = el("tr", { class: "row-subj-" + (SUBJECT_VAR[g.subject] || "") + " concept-parent-row" + (isOpen ? " open" : "") });
+        var tdC = el("td", { class: "strong concept-toggle-cell" });
+        var caret = el("span", { class: "concept-caret" }); caret.textContent = "▸";
+        tdC.appendChild(caret);
+        tdC.appendChild(document.createTextNode(g.concept));
+        if (g.subtopics.length > 1) {
+          var chip = el("span", { class: "concept-subtopic-count" }); chip.textContent = g.subtopics.length + " subtopics";
+          tdC.appendChild(chip);
+        }
+        tr.appendChild(tdC);
+        if (!hideSubject) {
+          var tdS = el("td"); tdS.textContent = g.subject;
+          tr.appendChild(tdS);
+        }
+        var tdW = el("td", { class: "num" }); tdW.textContent = g.wrong; tr.appendChild(tdW);
+        var tdU = el("td", { class: "num" }); tdU.textContent = g.unattempted; tr.appendChild(tdU);
+        tr.addEventListener("click", function () {
+          openKeys[key] = !openKeys[key];
+          render();
+        });
+        tbody.appendChild(tr);
+
+        if (isOpen) {
+          g.subtopics.slice().sort(function (a, b) { return (b.wrong + b.unattempted) - (a.wrong + a.unattempted); }).forEach(function (s) {
+            var ctr = el("tr", { class: "concept-child-row" });
+            var tdName = el("td", { class: "concept-child-name" }); tdName.textContent = s.subtopic || "—";
+            ctr.appendChild(tdName);
+            if (!hideSubject) ctr.appendChild(el("td"));
+            var cW = el("td", { class: "num" }); cW.textContent = s.wrong; ctr.appendChild(cW);
+            var cU = el("td", { class: "num" }); cU.textContent = s.unattempted; ctr.appendChild(cU);
+            tbody.appendChild(ctr);
+          });
+        }
+      });
+    }
+    render();
+    card.appendChild(table);
+    return card;
+  }
+
+  function patternStrip(pattern) {
+    var info = DATA.patternInfo[pattern];
+    if (!info) return el("div");
+    var wrap = el("div", { class: "pattern-strip" });
+    [["Question mix", info.questions]].forEach(function (f) {
+      wrap.appendChild(el("div", { class: "pattern-fact" }, [text("div", "pf-label", f[0]), text("div", "pf-val", f[1])]));
+    });
+    return wrap;
+  }
+
+  function subjectTable(subjects) {
+    var card = el("div", { class: "table-card table-card-flush subject-table-card" });
+    card.appendChild(text("div", "table-card-title", "Subject-wise Detail"));
+    var t = el("table", { class: "data-table" });
+    var thead = el("thead", {}, [(function () {
+      var tr = el("tr");
+      ["Subject", "Qs", "Right", "Wrong", "Unatt.", "Score", "Rank"].forEach(function (h, idx) {
+        var th = el("th", { class: idx >= 1 ? "num" : "" }); th.textContent = h; tr.appendChild(th);
+      });
+      return tr;
+    })()]);
+    t.appendChild(thead);
+    var tbody = el("tbody");
+    subjects.forEach(function (r) {
+      var tr = el("tr", { class: "row-subj-" + (SUBJECT_VAR[r.subject] || "") });
+      var tdS = el("td"); tdS.textContent = r.subject;
+      tr.appendChild(tdS);
+      [r.totalQ, r.tracked ? r.right : "—", r.tracked ? r.wrong : "—", r.tracked ? r.unattempted : "—"].forEach(function (v) {
+        var td = el("td", { class: "num" }); td.textContent = v; tr.appendChild(td);
+      });
+      var tdScore = el("td", { class: "num strong" }); tdScore.textContent = r.score + "/" + r.maxScore; tr.appendChild(tdScore);
+      var tdRank = el("td", { class: "num" }); tdRank.textContent = r.subjectRank !== null && r.subjectRank !== undefined ? "#" + r.subjectRank : "—"; tr.appendChild(tdRank);
+      tbody.appendChild(tr);
+    });
+    t.appendChild(tbody);
+    card.appendChild(t);
+    return card;
+  }
+
+  // ---------------- Per-test panel ----------------
+  function buildTestPanel(test) {
+    var panel = el("section", { class: "panel", id: "panel-" + cssId(test.paperId), role: "tabpanel" });
+    var badgeClass = PATTERN_BADGE_CLASS[test.pattern] || "main";
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", "Test — " + test.dateLabel + (test.paperId.match(/(P\d+)$/) ? " (" + test.paperId.match(/(P\d+)$/)[1] + ")" : "")),
+        el("div", { class: "meta" }, [
+          (function () {
+            var b = el("span", { class: "badge " + badgeClass }, [el("span", { class: "dot" })]);
+            var t = document.createElement("span"); t.textContent = test.pattern; b.appendChild(t);
+            return b;
+          })(),
+        ])
+      ])
+    ]);
+    panel.appendChild(head);
+    panel.appendChild(patternStrip(test.pattern));
+
+    panel.appendChild(kpiRow([
+      { value: test.overall.score + "/" + test.overall.maxScore, label: "Score" },
+      { value: fmtPct(test.overall.pctOfMax), label: "Percentage" },
+      { value: test.overall.rank !== null ? "#" + test.overall.rank : "—", label: "Overall Rank" },
+      { value: fmtPct(test.overall.accuracy), label: "Accuracy" },
+      { value: test.overall.right, label: "Correct", cls: "good" },
+      { value: test.overall.wrong, label: "Incorrect", cls: "critical" },
+    ]));
+
+    panel.appendChild(subjectTable(test.subjects));
+
+    var grid = el("div", { class: "grid-2" });
+    var c1 = el("div", { class: "card" }, [text("div", "section-title", "Score by Subject")]);
+    var c1chart = el("div"); c1.appendChild(c1chart);
+    var c2 = el("div", { class: "card" }, [text("div", "section-title", "Right / Wrong / Unattempted")]);
+    var c2chart = el("div"); c2.appendChild(c2chart);
+    var c3 = el("div", { class: "card" }, [text("div", "section-title", "Rank by Subject")]);
+    var c3chart = el("div"); c3.appendChild(c3chart);
+    grid.appendChild(c1); grid.appendChild(c3); grid.appendChild(c2);
+    panel.appendChild(grid);
+    subjectScoreChart(c1chart, test.subjects);
+    statusStackChart(c2chart, test.subjects);
+    subjectRankChart(c3chart, test.subjects, test.overall.rank);
+
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Mistakes by Error Code"),
+      text("div", "section-sub", "Why each question was missed, in the coach's own error taxonomy")
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, test.errorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    panel.appendChild(conceptTable(test.concepts));
+
+    var remarks = remarksBlock(test.insights, test.pattern);
+    if (remarks) panel.appendChild(remarks);
+
+    return panel;
+  }
+
+  function cssId(paperId) { return paperId.replace(/[^a-zA-Z0-9]/g, "_"); }
+
+  // ---------------- Overview panel ----------------
+  function buildOverviewPanel() {
+    var panel = el("section", { class: "panel active", id: "panel-overview", role: "tabpanel" });
+    var tests = DATA.tests;
+    var patterns = Array.from(new Set(tests.map(function (t) { return t.pattern; })));
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", "Overall Performance"),
+        el("div", { class: "meta" }, [
+          text("span", "", tests.length + " tests"),
+          text("span", "dot-sep", tests[0].dateLabel + " – " + tests[tests.length - 1].dateLabel),
+        ]),
+        el("div", { class: "meta", style: "margin-top:8px;" }, patterns.map(function (p) {
+          var badgeClass = PATTERN_BADGE_CLASS[p] || "main";
+          var b = el("span", { class: "badge " + badgeClass }, [el("span", { class: "dot" })]);
+          var t = document.createElement("span"); t.textContent = p; b.appendChild(t);
+          return b;
+        }))
+      ])
+    ]);
+    panel.appendChild(head);
+
+    var bestRankTest = tests.slice().sort(function (a, b) { return (a.overall.rank || 1e9) - (b.overall.rank || 1e9); })[0];
+    var latest = tests[tests.length - 1];
+    var trackedPct = tests.map(function (t) { return t.overall.pctOfMax; }).filter(function (v) { return v !== null; });
+    var avgPct = trackedPct.reduce(function (a, b) { return a + b; }, 0) / trackedPct.length;
+    panel.appendChild(kpiRow([
+      { value: tests.length, label: "Tests Taken" },
+      { value: fmtPct(avgPct), label: "Avg Percentage" },
+      { value: "#" + bestRankTest.overall.rank, label: "Best Rank (" + bestRankTest.pattern + ")" },
+      { value: latest.overall.rank !== null ? "#" + latest.overall.rank : "—", label: "Most Recent Rank" },
+    ]));
+
+    var trendCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Percentage Trend Across Tests"),
+    ]);
+    var trendChart = el("div"); trendCard.appendChild(trendChart);
+    panel.appendChild(trendCard);
+    lineChart(trendChart, tests.map(function (t) { return t.paperId; }),
+      [{
+        name: "Percentage", color: "var(--ink-3)",
+        values: tests.map(function (t) { return t.overall.pctOfMax; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: 100, suffix: "%", ariaLabel: "Score trend",
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+        valueFmt: function (v, i) { return v + "% (" + tests[i].overall.score + "/" + tests[i].overall.maxScore + ")"; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+      });
+
+    var rankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Overall Rank Trend"),
+    ]);
+    var rankChart = el("div"); rankCard.appendChild(rankChart);
+    panel.appendChild(rankCard);
+    var ranks = tests.map(function (t) { return t.overall.rank; }).filter(function (v) { return v !== null; });
+    lineChart(rankChart, tests.map(function (t) { return t.paperId; }),
+      [{ name: "Rank", color: "var(--ink-3)", values: tests.map(function (t) { return t.overall.rank; }),
+         pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+         pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }) }],
+      {
+        min: 0, max: 75, yTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
+        ariaLabel: "Rank trend", valueFmt: function (v, i) { return "#" + v; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+      });
+
+    var accCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Subject-wise Percentage Trend"),
+    ]);
+    var accChart = el("div"); accCard.appendChild(accChart);
+    panel.appendChild(accCard);
+    var xLabels = tests.map(function (t) { return t.paperId; });
+    lineChart(accChart, xLabels, ["Physics", "Chemistry", "Maths"].map(function (subj) {
+      return {
+        name: subj, color: "var(--" + SUBJECT_VAR[subj] + ")",
+        values: tests.map(function (t) {
+          var row = t.subjects.filter(function (s) { return s.subject === subj; })[0];
+          return row ? row.pctOfMax : null;
+        })
+      };
+    }), {
+      min: 0, max: 100, suffix: "%", ariaLabel: "Subject percentage trend",
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+      xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50,
+    });
+
+    var subjRankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Subject-wise Rank Trend"),
+    ]);
+    var subjRankChart = el("div"); subjRankCard.appendChild(subjRankChart);
+    panel.appendChild(subjRankCard);
+    var subjRankSeries = ["Physics", "Chemistry", "Maths"].map(function (subj) {
+      return {
+        name: subj, color: "var(--" + SUBJECT_VAR[subj] + ")",
+        values: tests.map(function (t) {
+          var row = t.subjects.filter(function (s) { return s.subject === subj; })[0];
+          return row && row.subjectRank !== null && row.subjectRank !== undefined ? row.subjectRank : null;
+        })
+      };
+    });
+    var allSubjRanks = subjRankSeries.reduce(function (acc, sr) { return acc.concat(sr.values.filter(function (v) { return v !== null; })); }, []);
+    lineChart(subjRankChart, xLabels, subjRankSeries, {
+      min: Math.min.apply(null, allSubjRanks) - 3, max: Math.max.apply(null, allSubjRanks) + 3,
+      ariaLabel: "Subject rank trend", valueFmt: function (v) { return "#" + v; },
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+      xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50,
+    });
+
+    var allErrorCodes = [];
+    tests.forEach(function (t) { (t.errorCodes || []).forEach(function (e) { allErrorCodes.push(e); }); });
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Mistakes by Error Code"),
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, allErrorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    var summaryCard = el("div", { class: "table-card table-card-flush summary-table-card" });
+    summaryCard.appendChild(text("div", "table-card-title", "Summary"));
+    var t = el("table", { class: "data-table" });
+    t.appendChild(el("thead", {}, [(function () {
+      var tr = el("tr");
+      ["Test", "Pattern", "Score", "Percent", "Rank"].forEach(function (h, idx) {
+        var th = el("th", { class: idx >= 2 ? "num" : "" }); th.textContent = h; tr.appendChild(th);
+      });
+      return tr;
+    })()]));
+    var tbody = el("tbody");
+    tests.forEach(function (r) {
+      var tr = el("tr", { class: "row-" + (PATTERN_BADGE_CLASS[r.pattern] || "main") });
+      tr.appendChild(el("td", { class: "strong" }, [document.createTextNode(r.paperId)]));
+      var tdP = el("td"); tdP.textContent = r.pattern; tr.appendChild(tdP);
+      var tdScore = el("td", { class: "num strong" }); tdScore.textContent = r.overall.score + "/" + r.overall.maxScore; tr.appendChild(tdScore);
+      var tdPct = el("td", { class: "num" });
+      var chip = el("span", { class: "acc-chip " + accClass(r.overall.pctOfMax) }); chip.textContent = fmtPct(r.overall.pctOfMax);
+      tdPct.appendChild(chip); tr.appendChild(tdPct);
+      var tdRank = el("td", { class: "num" }); tdRank.textContent = r.overall.rank !== null ? "#" + r.overall.rank : "—"; tr.appendChild(tdRank);
+      tbody.appendChild(tr);
+    });
+    t.appendChild(tbody);
+    summaryCard.appendChild(t);
+    panel.appendChild(summaryCard);
+
+    var remarks = remarksBlock(DATA.overallInsights, "Cross-Pattern");
+    if (remarks) panel.appendChild(remarks);
+
+    return panel;
+  }
+
+  // ---------------- Subject Overview panels (Physics / Chemistry / Maths) ----------------
+  function buildSubjectOverviewPanel(subject) {
+    var slug = subject.toLowerCase();
+    var subjColor = "var(--" + SUBJECT_VAR[subject] + ")";
+    var panel = el("section", { class: "panel subject-overview", id: "panel-" + slug + "-overview", role: "tabpanel" });
+    var tests = DATA.tests;
+    var patterns = Array.from(new Set(tests.map(function (t) { return t.pattern; })));
+    var xLabels = tests.map(function (t) { return t.paperId; });
+    function subjRow(t) { return t.subjects.filter(function (s) { return s.subject === subject; })[0]; }
+
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", subject + " Overview"),
+        el("div", { class: "meta" }, [
+          text("span", "", tests.length + " tests"),
+          text("span", "dot-sep", tests[0].dateLabel + " – " + tests[tests.length - 1].dateLabel),
+        ]),
+      ])
+    ]);
+    panel.appendChild(head);
+
+    var subjPct = tests.map(function (t) { var r = subjRow(t); return r ? r.pctOfMax : null; }).filter(function (v) { return v !== null && v !== undefined; });
+    var avgPct = subjPct.reduce(function (a, b) { return a + b; }, 0) / subjPct.length;
+    var rankData = tests.map(function (t) {
+      var r = subjRow(t);
+      return { test: t, rank: r && r.subjectRank !== null && r.subjectRank !== undefined ? r.subjectRank : null };
+    });
+    var ranked = rankData.filter(function (x) { return x.rank !== null; });
+    var bestRank = ranked.length ? ranked.slice().sort(function (a, b) { return a.rank - b.rank; })[0] : null;
+    var latestRank = rankData[rankData.length - 1];
+
+    panel.appendChild(kpiRow([
+      { value: tests.length, label: "Tests Taken" },
+      { value: fmtPct(avgPct), label: "Avg Percentage" },
+      { value: bestRank ? "#" + bestRank.rank : "—", label: "Best Rank" + (bestRank ? " (" + bestRank.test.paperId + ")" : "") },
+      { value: latestRank.rank !== null ? "#" + latestRank.rank : "—", label: "Most Recent Rank" },
+    ]));
+
+    var trendCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " Percentage Trend"),
+    ]);
+    var trendChart = el("div"); trendCard.appendChild(trendChart);
+    panel.appendChild(trendCard);
+    lineChart(trendChart, xLabels,
+      [{
+        name: subject, color: subjColor,
+        values: tests.map(function (t) { var r = subjRow(t); return r ? r.pctOfMax : null; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: 100, suffix: "%", ariaLabel: subject + " percentage trend",
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+        valueFmt: function (v, i) { var r = subjRow(tests[i]); return r ? v + "% (" + r.score + "/" + r.maxScore + ")" : v + "%"; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+      });
+
+    var rankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " Rank Trend"),
+    ]);
+    var rankChart = el("div"); rankCard.appendChild(rankChart);
+    panel.appendChild(rankCard);
+    var rankVals = ranked.map(function (x) { return x.rank; });
+    lineChart(rankChart, xLabels,
+      [{
+        name: subject, color: subjColor,
+        values: rankData.map(function (x) { return x.rank; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: Math.max.apply(null, rankVals) + 3,
+        ariaLabel: subject + " rank trend", valueFmt: function (v) { return "#" + v; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+      });
+
+    var subjErrorCodes = [];
+    tests.forEach(function (t) { (t.errorCodes || []).forEach(function (e) { if (e.subject === subject) subjErrorCodes.push(e); }); });
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " — Mistakes by Error Code"),
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, subjErrorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    var byKey = {};
+    tests.forEach(function (t) {
+      t.concepts.forEach(function (c) {
+        if (c.subject !== subject) return;
+        var key = c.concept + "||" + (c.subtopic || "");
+        if (!byKey[key]) byKey[key] = { concept: c.concept, subtopic: c.subtopic, subject: subject, wrong: 0, unattempted: 0, total: 0 };
+        byKey[key].wrong += c.wrong;
+        byKey[key].unattempted += c.unattempted;
+        byKey[key].total += (c.total || 0);
+      });
+    });
+    panel.appendChild(conceptTable(Object.values(byKey), true));
+
+    var subjInsights = DATA[slug + "Insights"] ? Object.assign({}, DATA[slug + "Insights"]) : null;
+    if (subjInsights && typeof subjInsights.errorCodeNote === "string") {
+      subjInsights.errorCodeNote = subjInsights.errorCodeNote
+        .split(/(?<=[.!?])\s+(?=[A-Z])/)
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean);
+    }
+    var subjRemarks = remarksBlock(subjInsights, subject, subject + " Examiner's Remarks", true);
+    if (subjRemarks) panel.appendChild(subjRemarks);
+
+    return panel;
+  }
+
+  var RAIL_META = {};
+
+  function buildRail() {
+    var rail = document.getElementById("rail");
+    var brandRow = el("div", { class: "rail-brand" }, [
+      el("div", {}, [text("p", "eyebrow", "Exam Console"), text("h1", "", "Monday Test Series")]),
+    ]);
+    var closeBtn = el("button", { class: "rail-close-btn", "aria-label": "Close menu" }, []);
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", closeRail);
+    brandRow.appendChild(closeBtn);
+    rail.appendChild(brandRow);
+
+    RAIL_META.overview = { title: "Overview", sub: DATA.tests.length + " tests" };
+    var btn0 = el("button", { class: "rail-item", role: "tab", "aria-selected": "true", "data-target": "overview" }, [
+      el("span", { class: "rail-dot" }), el("div", { class: "rt" }, [text("span", "label", "Overview"), text("span", "sub", DATA.tests.length + " tests")])
+    ]);
+    btn0.addEventListener("click", function () { selectPanel("overview"); });
+    rail.appendChild(btn0);
+
+    ["Physics", "Chemistry", "Maths"].forEach(function (subject) {
+      var target = subject.toLowerCase() + "-overview";
+      var label = subject + " Overview";
+      RAIL_META[target] = { title: label, sub: DATA.tests.length + " tests" };
+      var btnSubj = el("button", { class: "rail-item", role: "tab", "aria-selected": "false", "data-target": target }, [
+        el("span", { class: "rail-dot" }), el("div", { class: "rt" }, [text("span", "label", label), text("span", "sub", DATA.tests.length + " tests")])
+      ]);
+      btnSubj.addEventListener("click", function () { selectPanel(target); });
+      rail.appendChild(btnSubj);
+    });
+
+    var groups = {};
+    DATA.tests.forEach(function (t) { (groups[t.pattern] = groups[t.pattern] || []).push(t); });
+    Object.keys(groups).forEach(function (pattern) {
+      rail.appendChild(text("div", "rail-group-label", pattern));
+      groups[pattern].slice().reverse().forEach(function (t) {
+        var id = cssId(t.paperId);
+        var suffixMatch = t.paperId.match(/(P\d+)$/);
+        var railLabel = t.dateLabel + (suffixMatch ? " (" + suffixMatch[1] + ")" : "");
+        RAIL_META[id] = { title: railLabel, sub: t.pattern + " · Rank #" + (t.overall.rank !== null ? t.overall.rank : "—") };
+        var btn = el("button", { class: "rail-item", role: "tab", "aria-selected": "false", "data-target": id }, [
+          el("span", { class: "rail-dot" }),
+          el("div", { class: "rt" }, [text("span", "label", railLabel), text("span", "sub", "Rank #" + (t.overall.rank !== null ? t.overall.rank : "—"))]),
+          text("span", "score-chip num", fmtPct(t.overall.pctOfMax))
+        ]);
+        btn.addEventListener("click", function () { selectPanel(id); });
+        rail.appendChild(btn);
+      });
+    });
+    rail.appendChild(el("div", { class: "rail-foot" }, [document.createTextNode(DATA.generatedFor)]));
+  }
+
+  function buildMobileChrome() {
+    var app = document.querySelector(".app");
+    var backdrop = el("div", { class: "rail-backdrop", id: "rail-backdrop" });
+    backdrop.addEventListener("click", closeRail);
+
+    var hamburger = el("button", { class: "hamburger-btn", id: "hamburger-btn", "aria-label": "Open test menu", "aria-expanded": "false", "aria-controls": "rail" }, [
+      el("span", {}), el("span", {}), el("span", {})
+    ]);
+    hamburger.addEventListener("click", function () {
+      if (document.getElementById("rail").classList.contains("open")) closeRail(); else openRail();
+    });
+    var titleWrap = el("div", { class: "mt-titlewrap" }, [
+      text("div", "mt-title", "Overview"), text("div", "mt-sub", DATA.tests.length + " tests")
+    ]);
+    var topbar = el("div", { class: "mobile-topbar", id: "mobile-topbar" }, [hamburger, titleWrap]);
+
+    app.insertBefore(topbar, app.firstChild);
+    app.insertBefore(backdrop, app.firstChild);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeRail();
+    });
+  }
+
+  function openRail() {
+    document.getElementById("rail").classList.add("open");
+    document.getElementById("rail-backdrop").classList.add("open");
+    document.getElementById("hamburger-btn").setAttribute("aria-expanded", "true");
+  }
+  function closeRail() {
+    var rail = document.getElementById("rail");
+    var backdrop = document.getElementById("rail-backdrop");
+    var hamburger = document.getElementById("hamburger-btn");
+    if (rail) rail.classList.remove("open");
+    if (backdrop) backdrop.classList.remove("open");
+    if (hamburger) hamburger.setAttribute("aria-expanded", "false");
+  }
+
+  function selectPanel(id) {
+    document.querySelectorAll(".rail-item").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-target") === id ? "true" : "false"); });
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("active"); });
+    var target = document.getElementById(id === "overview" ? "panel-overview" : "panel-" + id);
+    if (target) target.classList.add("active");
+    var meta = RAIL_META[id];
+    if (meta) {
+      var titleEl = document.querySelector("#mobile-topbar .mt-title");
+      var subEl = document.querySelector("#mobile-topbar .mt-sub");
+      if (titleEl) titleEl.textContent = meta.title;
+      if (subEl) subEl.textContent = meta.sub;
+    }
+    closeRail();
+    window.scrollTo(0, 0);
+  }
+
+  function init() {
+    buildRail();
+    buildMobileChrome();
+    var consoleEl = document.getElementById("console");
+    consoleEl.appendChild(buildOverviewPanel());
+    ["Physics", "Chemistry", "Maths"].forEach(function (subject) { consoleEl.appendChild(buildSubjectOverviewPanel(subject)); });
+    DATA.tests.forEach(function (t) { consoleEl.appendChild(buildTestPanel(t)); });
+  }
+  init();
+})();
+</script>

@@ -1,0 +1,1424 @@
+<title>JEE / BITSAT Test Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light;
+    --page:        #f4f4f0;
+    --surface:     #ffffff;
+    --surface-2:   #fbfaf7;
+    --ink-1:       #15171c;
+    --ink-2:       #54565f;
+    --ink-3:       #85868f;
+    --hairline:    rgba(21,23,28,0.09);
+    --hairline-2:  rgba(21,23,28,0.14);
+    --accent:      #33429b;
+    --accent-wash: rgba(51,66,155,0.08);
+    --advanced:    #9a3fb5;
+    --advanced-wash: rgba(154,63,181,0.10);
+    --bitsat:      #0f7a8c;
+    --bitsat-wash: rgba(15,122,140,0.10);
+    --good:        #0ca30c;
+    --critical:    #d03b3b;
+    --muted-status:#898781;
+    --warning:     #b9750a;
+    --phy:         #2a78d6;
+    --chem:        #eb6834;
+    --math:        #1baf7a;
+    --eng:         #c9930a;
+    --iq:          #c05a86;
+    --shadow:      0 1px 2px rgba(21,23,28,0.06), 0 8px 24px -12px rgba(21,23,28,0.18);
+    --remark-bg:   #fbf6e9;
+    --remark-edge: #c99a2e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:        #101216;
+      --surface:     #1a1d24;
+      --surface-2:   #20232b;
+      --ink-1:       #f0efe9;
+      --ink-2:       #b7b7b3;
+      --ink-3:       #83848c;
+      --hairline:    rgba(240,239,233,0.09);
+      --hairline-2:  rgba(240,239,233,0.15);
+      --accent:      #8b97ec;
+      --accent-wash: rgba(139,151,236,0.14);
+      --advanced:    #dd8fea;
+      --advanced-wash: rgba(221,143,234,0.14);
+      --bitsat:      #45c2d6;
+      --bitsat-wash: rgba(69,194,214,0.14);
+      --good:        #17c317;
+      --critical:    #e66767;
+      --muted-status:#9c9b95;
+      --warning:     #e0a53a;
+      --phy:         #3987e5;
+      --chem:        #e2793f;
+      --math:        #22c98a;
+      --eng:         #e0ac2f;
+      --iq:          #e388ae;
+      --shadow:      0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+      --remark-bg:   #23200f;
+      --remark-edge: #c99a2e;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #101216; --surface: #1a1d24; --surface-2: #20232b;
+    --ink-1: #f0efe9; --ink-2: #b7b7b3; --ink-3: #83848c;
+    --hairline: rgba(240,239,233,0.09); --hairline-2: rgba(240,239,233,0.15);
+    --accent: #8b97ec; --accent-wash: rgba(139,151,236,0.14);
+    --advanced: #dd8fea; --advanced-wash: rgba(221,143,234,0.14);
+    --bitsat: #45c2d6; --bitsat-wash: rgba(69,194,214,0.14);
+    --good: #17c317; --critical: #e66767; --muted-status: #9c9b95; --warning: #e0a53a;
+    --phy: #3987e5; --chem: #e2793f; --math: #22c98a; --eng: #e0ac2f; --iq: #e388ae;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.55);
+    --remark-bg: #23200f; --remark-edge: #c99a2e;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --page: #f4f4f0; --surface: #ffffff; --surface-2: #fbfaf7;
+    --ink-1: #15171c; --ink-2: #54565f; --ink-3: #85868f;
+    --hairline: rgba(21,23,28,0.09); --hairline-2: rgba(21,23,28,0.14);
+    --accent: #33429b; --accent-wash: rgba(51,66,155,0.08);
+    --advanced: #9a3fb5; --advanced-wash: rgba(154,63,181,0.10);
+    --bitsat: #0f7a8c; --bitsat-wash: rgba(15,122,140,0.10);
+    --good: #0ca30c; --critical: #d03b3b; --muted-status: #898781; --warning: #b9750a;
+    --phy: #2a78d6; --chem: #eb6834; --math: #1baf7a; --eng: #c9930a; --iq: #c05a86;
+    --shadow: 0 1px 2px rgba(21,23,28,0.06), 0 8px 24px -12px rgba(21,23,28,0.18);
+    --remark-bg: #fbf6e9; --remark-edge: #c99a2e;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; width: 100%; }
+  body {
+    background: var(--page); color: var(--ink-1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-weight: 400; text-wrap: balance; color: var(--ink-1);
+  }
+  .num, .tabular { font-family: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace; font-variant-numeric: tabular-nums; }
+  button { font: inherit; }
+
+  .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+
+  .rail {
+    background: var(--surface); border-right: 1px solid var(--hairline);
+    padding: 20px 14px; display: flex; flex-direction: column; gap: 2px;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  .rail-brand { padding: 4px 8px 18px; border-bottom: 1px solid var(--hairline); margin-bottom: 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .rail-close-btn { display: none; }
+  .rail-brand .eyebrow { font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 4px; }
+  .rail-brand h1 { font-size: 18px; margin: 0; line-height: 1.25; }
+  .rail-group-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3);
+    padding: 12px 10px 4px; font-weight: 700;
+  }
+  .rail-item {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    padding: 8px 10px; border-radius: 8px; border: 1px solid transparent; background: none; cursor: pointer; color: var(--ink-2);
+  }
+  .rail-item:hover { background: var(--surface-2); }
+  .rail-item[aria-selected="true"] { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--ink-1); }
+  .rail-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .rail-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--ink-3); }
+  .rail-item .rt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .rail-item .rt .label { font-size: 13px; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rail-item .rt .sub { font-size: 10.5px; color: var(--ink-3); }
+  .rail-item .score-chip { margin-left: auto; font-size: 10.5px; padding: 2px 6px; border-radius: 5px; background: var(--surface-2); color: var(--ink-2); flex: none; }
+  .rail-foot { margin-top: auto; padding: 10px 8px 2px; font-size: 10.5px; color: var(--ink-3); border-top: 1px solid var(--hairline); }
+
+  .console { padding: 30px 40px 80px; max-width: 1180px; min-width: 0; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .console-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding-bottom: 20px; margin-bottom: 22px; border-bottom: 1px solid var(--hairline); flex-wrap: wrap; }
+  .console-head h2 { font-size: 26px; margin: 0 0 6px; }
+  .console-head .meta { color: var(--ink-2); font-size: 13.5px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .meta .dot-sep::before { content: "·"; margin-right: 10px; color: var(--ink-3); }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.01em; padding: 3px 9px 3px 7px; border-radius: 100px; border: 1px solid transparent; }
+  .badge.main { background: var(--accent-wash); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+  .badge.advanced { background: var(--advanced-wash); color: var(--advanced); border-color: color-mix(in srgb, var(--advanced) 35%, transparent); }
+  .badge.bitsat { background: var(--bitsat-wash); color: var(--bitsat); border-color: color-mix(in srgb, var(--bitsat) 35%, transparent); }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .info-pill { font-size: 12px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; max-width: 340px; line-height: 1.45; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(var(--kpi-cols, 6), 1fr); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 12px; overflow: hidden; margin-bottom: 26px; box-shadow: var(--shadow); }
+  .kpi { background: var(--surface); padding: 14px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .kpi .v { font-size: 20px; font-weight: 600; }
+  .kpi .v.good { color: var(--good); } .kpi .v.critical { color: var(--critical); }
+  .kpi .l { font-size: 10.5px; color: var(--ink-3); letter-spacing: 0.01em; }
+
+  .section-title { font-size: 15px; margin: 0 0 3px; }
+  .section-sub { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; }
+  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 18px 20px 14px; box-shadow: var(--shadow); }
+  .card.wide { grid-column: 1 / -1; }
+  #panel-overview .card.wide { margin-bottom: 24px; }
+  .panel.subject-overview .card.wide { margin-bottom: 24px; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .legend-line { width: 14px; height: 2px; border-radius: 2px; flex: none; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; border: 1.5px solid var(--surface); }
+  .legend-square { width: 9px; height: 9px; border-radius: 2px; flex: none; border: 1.5px solid var(--surface); }
+  .legend-triangle { width: 11px; height: 10px; flex: none; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+  .legend.legend-sm { gap: 10px; margin-top: 6px; font-size: 10px; }
+  .legend.legend-sm .legend-item { gap: 4px; }
+  .legend.legend-sm .legend-swatch { width: 7px; height: 7px; }
+  .legend.legend-sm .legend-line { width: 10px; height: 1.5px; }
+  .legend.legend-sm .legend-dot, .legend.legend-sm .legend-square { width: 6.5px; height: 6.5px; }
+  .legend.legend-sm .legend-triangle { width: 8px; height: 7px; }
+
+  svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+  .grid-line { stroke: var(--hairline); stroke-width: 1; }
+  .axis-line { stroke: var(--hairline-2); stroke-width: 1; }
+  .axis-label { fill: var(--ink-3); font-size: 10.5px; font-family: ui-monospace, monospace; }
+  .cat-label { fill: var(--ink-2); font-size: 11px; }
+  .bar-mark { cursor: pointer; transition: opacity .12s ease; }
+  .bar-mark:hover, .bar-mark.hovered { opacity: 0.82; }
+  .bar-value { fill: var(--ink-1); font-size: 10.5px; font-weight: 600; font-family: ui-monospace, monospace; }
+  .line-mark { fill: none; stroke-width: 2.5; }
+  .hit-target { fill: transparent; cursor: pointer; }
+  .crosshair { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; pointer-events: none; opacity: 0; }
+
+  #tooltip {
+    position: fixed; z-index: 60; pointer-events: none; background: var(--surface);
+    border: 1px solid var(--hairline-2); border-radius: 8px; box-shadow: var(--shadow);
+    padding: 8px 11px; font-size: 12px; color: var(--ink-2); opacity: 0;
+    transform: translate(-50%, calc(-100% - 10px)); transition: opacity .08s ease; max-width: 250px;
+  }
+  #tooltip.show { opacity: 1; }
+  #tooltip .tt-title { color: var(--ink-1); font-weight: 600; margin-bottom: 4px; font-size: 12.5px; }
+  #tooltip .tt-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  #tooltip .tt-key { display: flex; align-items: center; gap: 6px; }
+  #tooltip .tt-swatch { width: 9px; height: 2px; border-radius: 2px; flex: none; }
+  #tooltip .tt-val { color: var(--ink-1); font-weight: 700; font-family: ui-monospace, monospace; }
+
+  .remarks { background: var(--remark-bg); border: 1px solid color-mix(in srgb, var(--remark-edge) 35%, transparent); border-left: 3px solid var(--remark-edge); border-radius: 10px; padding: 20px 22px 22px; margin-bottom: 26px; }
+  .remarks-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .remarks-head .eyebrow { font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--remark-edge); font-weight: 700; }
+  .remarks-head .powered { font-size: 11px; color: var(--ink-3); }
+  .remarks h3.headline { font-size: 17px; margin: 2px 0 16px; color: var(--ink-1); }
+  .remarks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
+  .remarks-col h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; color: var(--ink-2); font-family: inherit; font-weight: 700; }
+  .remarks-col ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: var(--ink-1); }
+  .remarks-col ul.strengths li::marker { color: var(--good); }
+  .remarks-col ul.weaknesses li::marker { color: var(--critical); }
+  .note-block { background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.55; color: var(--ink-1); margin-bottom: 12px; }
+  .note-block .tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--advanced); display: block; margin-bottom: 5px; }
+  .note-block.rank .tag { color: var(--bitsat); }
+  .note-block.errorcode .tag { color: var(--critical); }
+  .concept-suggest { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cs-item { display: flex; gap: 10px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 10px 12px; }
+  .cs-item .cs-name { font-size: 12.5px; font-weight: 700; color: var(--ink-1); flex: 0 0 150px; }
+  .cs-item .cs-text { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .action-plan { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .action-plan li { display: flex; gap: 9px; font-size: 13px; line-height: 1.5; color: var(--ink-1); }
+  .action-plan .chk { flex: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid var(--remark-edge); margin-top: 1px; }
+  .note-bullets { margin: 0; padding-left: 16px; }
+  .note-bullets li { margin-bottom: 2px; }
+  .note-bullets li:last-child { margin-bottom: 0; }
+
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.data-table th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-3); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--hairline-2); cursor: pointer; user-select: none; white-space: nowrap; }
+  table.data-table th.num, table.data-table td.num { text-align: right; }
+  .summary-table-card table.data-table td.num { text-align: center; }
+  .concept-table-card table.data-table td.num { text-align: center; }
+  .subject-table-card table.data-table td.num { text-align: center; }
+  table.data-table th:hover { color: var(--ink-1); }
+  table.data-table td { padding: 8px 10px; border-bottom: 1px solid var(--hairline); color: var(--ink-2); }
+  table.data-table td.strong { color: var(--ink-1); font-weight: 600; }
+  table.data-table tr.row-main td { background: var(--accent-wash); }
+  table.data-table tr.row-advanced td { background: var(--advanced-wash); }
+  table.data-table tr.row-bitsat td { background: var(--bitsat-wash); }
+  table.data-table tr.row-subj-phy td { background: color-mix(in srgb, var(--phy) 12%, transparent); }
+  table.data-table tr.row-subj-chem td { background: color-mix(in srgb, var(--chem) 12%, transparent); }
+  table.data-table tr.row-subj-math td { background: color-mix(in srgb, var(--math) 12%, transparent); }
+  table.data-table tr.row-subj-eng td { background: color-mix(in srgb, var(--eng) 12%, transparent); }
+  table.data-table tr.row-subj-iq td { background: color-mix(in srgb, var(--iq) 12%, transparent); }
+  table.data-table tr:hover td { background: var(--surface-2); }
+  .subject-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+  .acc-chip { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; }
+  .acc-chip.good { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+  .acc-chip.warn { background: color-mix(in srgb, var(--warning) 18%, transparent); color: var(--warning); }
+  .acc-chip.bad { background: color-mix(in srgb, var(--critical) 15%, transparent); color: var(--critical); }
+  .acc-chip.na { background: var(--hairline); color: var(--ink-3); }
+
+  .table-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); margin-bottom: 26px; overflow-x: auto; }
+  .table-card.table-card-flush { padding: 0; overflow: hidden; }
+  .table-card.table-card-flush table.data-table th:first-child,
+  .table-card.table-card-flush table.data-table td:first-child { padding-left: 10px; }
+  .table-card.table-card-flush table.data-table th:last-child,
+  .table-card.table-card-flush table.data-table td:last-child { padding-right: 10px; }
+  .table-card.table-card-flush table.data-table th { padding-top: 14px; padding-bottom: 14px; text-align: center; font-weight: 700; color: var(--ink-1); }
+  .table-card.table-card-flush table.data-table td:first-child.strong { font-weight: 400; }
+  .table-card-title { text-align: center; font-size: 15px; font-weight: 700; color: var(--ink-1); padding: 16px 16px 12px; }
+  .table-card.table-card-flush table.data-table tr:last-child td { border-bottom: none; }
+
+  .pattern-strip { display: flex; gap: 14px; margin-bottom: 26px; flex-wrap: wrap; }
+  .pattern-fact { flex: 1; min-width: 220px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 10px; padding: 13px 15px; box-shadow: var(--shadow); }
+  .pattern-fact .pf-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); margin-bottom: 4px; }
+  .pattern-fact .pf-val { font-size: 12.5px; color: var(--ink-1); line-height: 1.5; }
+
+  .untracked-note { font-size: 11.5px; color: var(--ink-3); background: var(--surface-2); border: 1px dashed var(--hairline-2); border-radius: 6px; padding: 6px 10px; margin-top: 8px; }
+
+  /* ---------- Mobile top bar + collapsible rail drawer ---------- */
+  .mobile-topbar { display: none; }
+  .rail-backdrop { display: none; }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: minmax(0, 1fr); display: block; }
+    .mobile-topbar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; background: var(--surface); border-bottom: 1px solid var(--hairline);
+      position: sticky; top: 0; z-index: 40;
+    }
+    .hamburger-btn {
+      flex: none; width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--hairline); background: var(--surface-2);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      cursor: pointer; padding: 0;
+    }
+    .hamburger-btn span { display: block; width: 16px; height: 2px; border-radius: 1px; background: var(--ink-2); }
+    .hamburger-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .mt-titlewrap { min-width: 0; flex: 1; }
+    .mobile-topbar .mt-title { font-size: 14px; font-weight: 600; color: var(--ink-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mobile-topbar .mt-sub { font-size: 11px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .rail-close-btn {
+      display: flex; align-items: center; justify-content: center;
+      flex: none; width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--hairline); background: var(--surface-2); color: var(--ink-2);
+      font-size: 20px; line-height: 1; cursor: pointer; padding: 0;
+    }
+
+    .rail-backdrop {
+      display: block; position: fixed; inset: 0; background: rgba(10,10,12,0.45);
+      z-index: 65; opacity: 0; pointer-events: none; transition: opacity .2s ease;
+    }
+    .rail-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .rail {
+      position: fixed; top: 0; left: 0; height: 100vh; width: 82%; max-width: 300px;
+      transform: translateX(-100%); transition: transform .25s ease;
+      z-index: 70; box-shadow: 0 0 0 1px var(--hairline), 8px 0 24px -8px rgba(0,0,0,0.35);
+      min-width: 0;
+    }
+    .rail.open { transform: translateX(0); }
+    .rail-item { flex: none; }
+    .console { padding: 18px 14px 50px; min-width: 0; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .remarks-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .kpi { padding: 12px 10px; }
+    .kpi .v { font-size: 18px; }
+    .cs-item { flex-direction: column; gap: 3px; }
+    .cs-item .cs-name { flex: none; }
+    /* Tighten tables so they fit the screen width without horizontal scroll. */
+    .table-card { padding: 12px 8px; }
+    table.data-table { font-size: 10.5px; }
+    table.data-table th, table.data-table td { padding: 6px 3px; }
+    table.data-table th:first-child, table.data-table td:first-child { padding-left: 0; }
+    table.data-table th:last-child, table.data-table td:last-child { padding-right: 0; }
+    .badge { font-size: 10px; padding: 2px 7px 2px 6px; gap: 4px; }
+    .acc-chip { font-size: 10px; padding: 1px 5px; }
+    .subject-dot { width: 6px; height: 6px; margin-right: 4px; }
+  }
+  @media (max-width: 480px) {
+    .console-head h2 { font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app">
+  <nav class="rail" id="rail" aria-label="Test navigation"></nav>
+  <main class="console" id="console"></main>
+</div>
+<div id="tooltip" role="status" aria-live="polite"></div>
+
+<script id="dashboard-data" type="application/json">{"generatedFor": "JEE Aspirant \u2014 Weekly & Milestone Tests (Monday Test Series)", "patternInfo": {"JEE Main": {"questions": "75 (25 Physics + 25 Chemistry + 25 Maths)", "marking": "+4 correct / -1 incorrect on MCQs; numerical-type questions are +4/0 (no negative) in the real exam", "duration_min": 180, "character": "Higher volume, mostly single-correct MCQs plus some numerical-answer questions. Rewards speed, accuracy and calm question-selection under a 180-minute clock."}, "JEE Advanced": {"questions": "54 (18 Physics + 18 Chemistry + 18 Maths)", "marking": "Marking varies by question type: single-correct is typically +3/-1, multi-correct questions give partial credit and 0 (not negative) if nothing is marked, numerical types are usually +4/0", "duration_min": 180, "character": "Fewer, deeper questions per subject with more multi-step reasoning and multi-correct-option items than JEE Main. Scores here are not directly comparable to a JEE Main percentage."}, "BITSAT": {"questions": "130 (Physics 30, Chemistry 30, English Proficiency 10, Logical Reasoning 20, Maths 40)", "marking": "+3 correct / -1 incorrect, uniform across all sections including English and Logical Reasoning", "duration_min": 180, "character": "A different exam altogether from JEE: adds English Proficiency and Logical Reasoning sections, larger Maths weight (40 questions), and rewards broad speed across 5 sections rather than deep problem-solving on any one."}}, "errorCodeLegend": {"WBE": "Bubbling Error", "WCE": "Correction Error", "WFE": "Formula Error", "WIR": "Improper Reading", "WNL": "No Luck", "NLOT": "Lack Of Time", "NCNS": "Concept Not Studied", "NDUQ": "Didn't Understand Question", "NNIF": "No Idea Flashed", "NDNB": "Done But Not Bubbled"}, "tests": [{"paperId": "15-06-2026", "date": "15-06-2026", "dateLabel": "15 Jun 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 52, "wrong": 8, "unattempted": 15, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 86.7, "attemptRate": 80.0, "score": 201, "maxScore": 300, "rank": 72, "pctOfMax": 67.0}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 21, "wrong": 2, "unattempted": 2, "score": 80, "maxScore": 100, "subjectRank": null, "accuracy": 91.3, "attemptRate": 92.0, "tracked": true, "pctOfMax": 80.0}, {"subject": "Chemistry", "totalQ": 25, "right": 17, "wrong": 3, "unattempted": 5, "score": 73, "maxScore": 100, "subjectRank": null, "accuracy": 85.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 73.0}, {"subject": "Maths", "totalQ": 25, "right": 14, "wrong": 3, "unattempted": 8, "score": 48, "maxScore": 100, "subjectRank": null, "accuracy": 82.4, "attemptRate": 68.0, "tracked": true, "pctOfMax": 48.0}], "concepts": [{"subject": "Chemistry", "concept": "Normality", "wrong": 1, "unattempted": 2}, {"subject": "Chemistry", "concept": "Redox reaction", "wrong": 1, "unattempted": 2}, {"subject": "Chemistry", "concept": "e- state change", "wrong": 1, "unattempted": 0}, {"subject": "Chemistry", "concept": "n-factor", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "AM GM HM", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "AP & Logarithms", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "AP GP", "wrong": 0, "unattempted": 2}, {"subject": "Maths", "concept": "GP & Quadratic Eq", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "Infinite Series Sum", "wrong": 1, "unattempted": 2}, {"subject": "Maths", "concept": "Series Sum", "wrong": 1, "unattempted": 2}, {"subject": "Physics", "concept": "Differentiation", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "NLM", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Relative Motion", "wrong": 0, "unattempted": 1}, {"subject": "Physics", "concept": "Vectors", "wrong": 0, "unattempted": 1}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 5}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 5}, {"code": "WIR", "label": "Improper Reading", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Physics", "count": 1}], "insights": {"headline": "Strong 201/300 overall score driven by stellar Physics, but Maths pacing and Chemistry formula errors cap your rank at 72.", "strengths": ["Outstanding Physics execution with 80/100 score and 91.3% accuracy across 23 attempted questions.", "High overall accuracy of 86.7% with only 8 wrong answers out of 60 attempted questions."], "weaknesses": ["Maths score dropped to 48/100 with 8 unattempted questions due to pacing issues.", "Chemistry suffered 5 Formula Error instances leading to avoidable negative marks and lost attempts."], "patternNote": "In a 180-minute 75-question JEE Main test, spending too much time early hurt your Maths completion rate (only 68% attempt rate). Rebalancing time allocation will help capitalize on high-yielding questions across all 3 subjects.", "rankNote": "Your overall rank of 72 reflects solid proficiency with a score of 201/300 (67%), but elevating Maths from 48 to 70+ is essential to break into the top tier ranks.", "errorCodeNote": "The most frequent error codes were Formula Error (5 counts, all in Chemistry) and Lack Of Time (5 counts, all in Maths). This reveals that lost marks were a mix of memory retention gaps in Chemistry and poor time management under the clock in Maths.", "conceptSuggestions": [{"concept": "Normality", "suggestion": "Review equivalent weight formulas and practice 10-15 volumetric analysis numerical problems to ensure quick recall."}, {"concept": "Redox reaction", "suggestion": "Revisiting balancing redox equations and n-factor calculations will eliminate both unattempted questions and calculation errors."}, {"concept": "Infinite Series Sum", "suggestion": "Practice standard telescoping series and AP-GP mixed series problems to improve pattern recognition speed."}, {"concept": "Series Sum", "suggestion": "Work through sequence and series summation techniques under timed conditions to reduce decision latency during the test."}]}}, {"paperId": "22-06-2026", "date": "22-06-2026", "dateLabel": "22 Jun 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 39, "wrong": 11, "unattempted": 4, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 78.0, "attemptRate": 92.6, "score": 126, "maxScore": 186, "rank": 31, "pctOfMax": 67.7}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 15, "wrong": 1, "unattempted": 2, "score": 52, "maxScore": 62, "subjectRank": null, "accuracy": 93.8, "attemptRate": 88.9, "tracked": true, "pctOfMax": 83.9}, {"subject": "Chemistry", "totalQ": 18, "right": 10, "wrong": 7, "unattempted": 1, "score": 35, "maxScore": 62, "subjectRank": null, "accuracy": 58.8, "attemptRate": 94.4, "tracked": true, "pctOfMax": 56.5}, {"subject": "Maths", "totalQ": 18, "right": 14, "wrong": 3, "unattempted": 1, "score": 39, "maxScore": 62, "subjectRank": null, "accuracy": 82.4, "attemptRate": 94.4, "tracked": true, "pctOfMax": 62.9}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 1, "unattempted": 0}, {"subject": "Chemistry", "concept": "Normality", "wrong": 1, "unattempted": 1}, {"subject": "Chemistry", "concept": "Redox reaction", "wrong": 1, "unattempted": 0}, {"subject": "Chemistry", "concept": "n-factor", "wrong": 4, "unattempted": 0}, {"subject": "Maths", "concept": "Progressions", "wrong": 1, "unattempted": 1}, {"subject": "Maths", "concept": "Trignometry", "wrong": 2, "unattempted": 0}, {"subject": "Physics", "concept": "Vectors", "wrong": 1, "unattempted": 2}], "errorCodes": [{"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 5}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 1}], "insights": {"headline": "Solid overall score of 126/186 (67.7%) securing Rank 31, backed by strong Physics performance but impaired by calculation errors in Chemistry.", "strengths": ["Physics performance was exceptional with 52/62 marks, 93.8% accuracy, and 15 correct responses out of 18 questions.", "Maintained a high attempt rate of 92.6% across the paper, demonstrating good confidence and stamina over 180 minutes."], "weaknesses": ["Chemistry accuracy dropped to 58.8% with 7 wrong attempts, netting only 35/62 marks.", "Significant weakness in physical chemistry fundamentals, particularly n-factor calculation which caused 4 wrong questions."], "patternNote": "In this 54-question JEE Advanced paper with multi-type marking rules, high attempt volume yielded high returns in Physics (83.9% of max) but punished careless errors in Chemistry.", "rankNote": "Your overall rank of 31 reflects a strong foundation, but trimming down the 7 incorrect attempts in Chemistry would elevate your overall score past 140 and drastically improve your rank.", "errorCodeNote": "The single most frequent issue was Correction Error with 6 occurrences\u2014hitting Chemistry hardest with 5 counts\u2014revealing that marks were primarily lost to careless execution rather than conceptual failure.", "conceptSuggestions": [{"concept": "n-factor", "suggestion": "Review redox reaction types and practice finding equivalent weights across disproportionation and multi-electron transfer reactions."}, {"concept": "Vectors", "suggestion": "Work through fundamental vector resolution and 3D cross-product problems to clear up both unattempted and incorrect questions."}, {"concept": "Trignometry", "suggestion": "Drill compound angle transformations and practice double-checking trigonometric simplification steps to eliminate calculation slips."}, {"concept": "Normality", "suggestion": "Revise the exact relationship between molarity, normality, and valence factors in volumetric analysis problems."}]}}, {"paperId": "06-07-2026", "date": "06-07-2026", "dateLabel": "06 Jul 2026", "pattern": "BITSAT", "totalQuestions": 130, "overall": {"right": 81, "wrong": 13, "unattempted": 6, "total": 130, "trackedTotal": 100, "untrackedSubjects": ["English", "IQ"], "accuracy": 86.2, "attemptRate": 94.0, "score": 303, "maxScore": 390, "rank": 22, "pctOfMax": 77.7}, "subjects": [{"subject": "Physics", "totalQ": 30, "right": 26, "wrong": 4, "unattempted": 0, "score": 74, "maxScore": 90, "subjectRank": 55, "accuracy": 86.7, "attemptRate": 100.0, "tracked": true, "pctOfMax": 82.2}, {"subject": "Chemistry", "totalQ": 30, "right": 26, "wrong": 4, "unattempted": 0, "score": 78, "maxScore": 90, "subjectRank": 14, "accuracy": 86.7, "attemptRate": 100.0, "tracked": true, "pctOfMax": 86.7}, {"subject": "Maths", "totalQ": 40, "right": 29, "wrong": 5, "unattempted": 6, "score": 82, "maxScore": 120, "subjectRank": 27, "accuracy": 85.3, "attemptRate": 85.0, "tracked": true, "pctOfMax": 68.3}, {"subject": "English", "totalQ": 10, "right": null, "wrong": null, "unattempted": null, "score": 22, "maxScore": 30, "subjectRank": 201, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 73.3}, {"subject": "IQ", "totalQ": 20, "right": null, "wrong": null, "unattempted": null, "score": 47, "maxScore": 60, "subjectRank": 80, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 78.3}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 2, "unattempted": 0}, {"subject": "Chemistry", "concept": "e- state change", "wrong": 2, "unattempted": 0}, {"subject": "Maths", "concept": "Quadratic Eq", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "Trignometric equation", "wrong": 0, "unattempted": 2}, {"subject": "Maths", "concept": "Trignometry", "wrong": 4, "unattempted": 4}, {"subject": "Physics", "concept": "Dimensions", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Error Analysis", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Kinematics", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Least Count", "wrong": 1, "unattempted": 0}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 3}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 3}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Maths", "count": 1}], "insights": {"headline": "Solid overall score of 303/390 securing Rank 22, powered by high accuracy in Chemistry and Physics.", "strengths": ["Chemistry was exceptional with a score of 78/90, achieving 86.7% accuracy and a strong subject rank of 14.", "Maintained a full 100% attempt rate across both Physics and Chemistry, getting 26 correct in each."], "weaknesses": ["Maths underperformed relative to its 120-mark weight, scoring 82 with 5 wrong and 6 unattempted questions.", "English rank dropped to 201 with 22/30 marks, presenting a significant area for competitive improvement."], "patternNote": "BITSAT rewards high-speed coverage across 130 questions; while 100% attempts in Physics and Chemistry worked well, stalling on Maths led to 6 unattempted questions.", "rankNote": "Your overall rank of 22 is impressive, but a Physics rank of 55 with 74/90 shows the cohort scored very high there, whereas an English rank of 201 indicates easy competitive gains if targeted.", "errorCodeNote": "Correction Error was the most frequent execution issue with 5 total occurrences across Chemistry, Maths, and Physics, showing that calculation blunders cost more marks than genuine conceptual gaps.", "conceptSuggestions": [{"concept": "Trignometry", "suggestion": "Revise compound angle formulas and rapid reduction identities to recover marks from the 8 impacted questions."}, {"concept": "Atomic Structure", "suggestion": "Revisit quantum numbers and orbital energy definitions to fix the 2 incorrect attempts."}, {"concept": "e- state change", "suggestion": "Practice Rydberg equation calculations and electron jump energy transitions to eliminate calculation mistakes."}, {"concept": "Trignometric equation", "suggestion": "Solve 15 targeted general solution problems to convert these 2 unattempted questions into quick points."}]}}, {"paperId": "13-07-2026", "date": "13-07-2026", "dateLabel": "13 Jul 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 69, "wrong": 6, "unattempted": 0, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 92.0, "attemptRate": 100.0, "score": 270, "maxScore": 300, "rank": 14, "pctOfMax": 90.0}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 24, "wrong": 1, "unattempted": 0, "score": 95, "maxScore": 100, "subjectRank": 11, "accuracy": 96.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 95.0}, {"subject": "Chemistry", "totalQ": 25, "right": 21, "wrong": 4, "unattempted": 0, "score": 80, "maxScore": 100, "subjectRank": 159, "accuracy": 84.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 80.0}, {"subject": "Maths", "totalQ": 25, "right": 24, "wrong": 1, "unattempted": 0, "score": 95, "maxScore": 100, "subjectRank": 6, "accuracy": 96.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 95.0}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 4, "unattempted": 0}, {"subject": "Maths", "concept": "Trignometry", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Projectile", "wrong": 1, "unattempted": 0}], "errorCodes": [{"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 2}], "insights": {"headline": "Outstanding overall performance with 270/300 (Rank 14), anchored by 95/100 in both Physics and Maths.", "strengths": ["Achieved 95/100 in Physics (Rank 11) and Maths (Rank 6) with exceptional 96.0% accuracy in both subjects.", "Attempted all 75 questions across the paper, securing an overall accuracy of 92.0% and a 90.0% score."], "weaknesses": ["Chemistry lagged behind with an 80/100 score and 4 incorrect responses, pulling its subject rank down to 159.", "Lost 8 marks in Chemistry specifically on Atomic Structure questions due to formula and calculation slips."], "patternNote": "Attempting all 75 questions under the 180-minute JEE Main format yielded a great overall score, but the 6 incorrect MCQ attempts incurred 6 penalty marks that could have easily been saved.", "rankNote": "Your overall rank of 14 is solid, but while an 80/100 in Chemistry looks acceptable in isolation, the subject rank of 159 reveals that the cohort performed much better in Chemistry, making those 4 mistakes cost you significantly.", "errorCodeNote": "Formula Error was the leading single-subject issue with 2 mistakes in Chemistry, alongside Correction Error across Physics and Chemistry, showing that avoidable execution mistakes dominated your lost marks rather than lack of preparation.", "conceptSuggestions": [{"concept": "Atomic Structure", "suggestion": "Review core quantum mechanical formulas and spectral line equations, then solve 15 targeted practice problems to eliminate formula errors."}, {"concept": "Trignometry", "suggestion": "Practice high-speed manipulation of multiple-angle identities to ensure quick solution paths flash immediately during the test."}, {"concept": "Projectile", "suggestion": "Revisit 2D trajectory and inclined plane projection formulas, re-working basic calculations carefully to avoid simple calculation errors."}]}}, {"paperId": "20-07-2026P1", "date": "20-07-2026", "dateLabel": "20 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 39, "wrong": 8, "unattempted": 7, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 83.0, "attemptRate": 87.0, "score": 140, "maxScore": 186, "rank": 22, "pctOfMax": 75.3}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 12, "wrong": 2, "unattempted": 4, "score": 46, "maxScore": 62, "subjectRank": 13, "accuracy": 85.7, "attemptRate": 77.8, "tracked": true, "pctOfMax": 74.2}, {"subject": "Chemistry", "totalQ": 18, "right": 15, "wrong": 1, "unattempted": 2, "score": 51, "maxScore": 62, "subjectRank": 32, "accuracy": 93.8, "attemptRate": 88.9, "tracked": true, "pctOfMax": 82.3}, {"subject": "Maths", "totalQ": 18, "right": 12, "wrong": 5, "unattempted": 1, "score": 43, "maxScore": 62, "subjectRank": 57, "accuracy": 70.6, "attemptRate": 94.4, "tracked": true, "pctOfMax": 69.4}], "concepts": [{"subject": "Chemistry", "concept": "No. of spectral line", "wrong": 1, "unattempted": 0}, {"subject": "Chemistry", "concept": "Schrodinger Wave equation", "wrong": 0, "unattempted": 1}, {"subject": "Chemistry", "concept": "e- state change", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "Locus", "wrong": 2, "unattempted": 1}, {"subject": "Maths", "concept": "Orthocenter", "wrong": 2, "unattempted": 0}, {"subject": "Maths", "concept": "Transformation Area", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "2D Motion", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "2D trajectory", "wrong": 0, "unattempted": 1}, {"subject": "Physics", "concept": "Projectile", "wrong": 1, "unattempted": 1}, {"subject": "Physics", "concept": "Relative Motion", "wrong": 0, "unattempted": 2}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Chemistry", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Physics", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Chemistry", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Physics", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WNL", "label": "No Luck", "subject": "Maths", "count": 1}], "insights": {"headline": "Solid overall performance with a score of 140/186 and Rank 22, anchored by high accuracy in Chemistry but dented by execution slips in Maths.", "strengths": ["Excellent accuracy in Chemistry at 93.8% with 15 correct responses yielding 51/62 marks.", "Strong overall attempt strategy with an 87.0% attempt rate across the 54 Advanced-level questions."], "weaknesses": ["Maths accuracy dropped to 70.6% due to 5 wrong questions, pulling Maths subject rank down to 57.", "Unnecessary mark loss from execution errors in Physics mechanics topics like Projectile and Relative Motion."], "patternNote": "Navigating this 180-minute, 54-question JEE Advanced paper required balancing multi-correct and numerical types; your 140/186 score shows strong handling of complex problem structures.", "rankNote": "Your overall rank of 22 reflects strong competitiveness, but subject ranks reveal key disparities: despite a high Chemistry score of 51/62, your rank there is 32 as the cohort scored well, while 5 errors in Maths dragged your subject rank down to 57.", "errorCodeNote": "The single most frequent issue was Correction Error (WCE) with 4 instances across the test, hit hardest in Maths with 3 occurrences, proving that marks were primarily lost to avoidable calculation slips rather than raw conceptual ignorance.", "conceptSuggestions": [{"concept": "Locus", "suggestion": "Re-solve all 3 wrong/unattempted Locus questions with emphasis on algebraic simplification steps to avoid calculation mistakes."}, {"concept": "Orthocenter", "suggestion": "Review vector and coordinate geometry formulas for triangle centers and re-attempt the 2 incorrect problems under timed conditions."}, {"concept": "Relative Motion", "suggestion": "Practice vector decomposition in relative velocity frames to build confidence on the 2 unattempted questions."}, {"concept": "Projectile", "suggestion": "Work through 2D trajectory constraint problems to fix both formula recall and problem interpretation."}]}}, {"paperId": "27-07-2026P1", "date": "27-07-2026", "dateLabel": "27 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 25, "wrong": 15, "unattempted": 14, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 62.5, "attemptRate": 74.1, "score": 95, "maxScore": 186, "rank": 43, "pctOfMax": 51.1}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 11, "wrong": 6, "unattempted": 1, "score": 38, "maxScore": 62, "subjectRank": 17, "accuracy": 64.7, "attemptRate": 94.4, "tracked": true, "pctOfMax": 61.3}, {"subject": "Chemistry", "totalQ": 18, "right": 6, "wrong": 6, "unattempted": 6, "score": 27, "maxScore": 62, "subjectRank": 117, "accuracy": 50.0, "attemptRate": 66.7, "tracked": true, "pctOfMax": 43.5}, {"subject": "Maths", "totalQ": 18, "right": 8, "wrong": 3, "unattempted": 7, "score": 30, "maxScore": 62, "subjectRank": 45, "accuracy": 72.7, "attemptRate": 61.1, "tracked": true, "pctOfMax": 48.4}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 3, "unattempted": 2}, {"subject": "Chemistry", "concept": "Mole Concept", "wrong": 0, "unattempted": 1}, {"subject": "Chemistry", "concept": "Periodic", "wrong": 0, "unattempted": 2}, {"subject": "Chemistry", "concept": "Redox reaction", "wrong": 3, "unattempted": 1}, {"subject": "Maths", "concept": "Coordinate geometry", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "Locus", "wrong": 0, "unattempted": 1}, {"subject": "Maths", "concept": "Straight Lines", "wrong": 1, "unattempted": 2}, {"subject": "Maths", "concept": "Trignometry", "wrong": 2, "unattempted": 3}, {"subject": "Physics", "concept": "Kinematics", "wrong": 4, "unattempted": 0}, {"subject": "Physics", "concept": "NLM", "wrong": 0, "unattempted": 1}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Physics", "count": 1}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Chemistry", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Chemistry", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 2}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 4}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 5}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 3}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 4}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Strong Physics performance and selective Maths accuracy earned overall rank 43, but Chemistry severely dragged your score with a subject rank of 117.", "strengths": ["Physics was your strongest subject, scoring 38/62 to secure a top-17 subject rank with an aggressive 94.4% attempt rate.", "Maths demonstrated solid risk management with 72.7% accuracy and only 3 incorrect responses."], "weaknesses": ["Chemistry posted a low accuracy of 50.0% and 6 unattempted questions, causing a sharp drop to subject rank 117.", "Execution errors heavily eroded your score, accumulating 8 Correction Errors and 6 Formula Errors across all three subjects."], "patternNote": "In this 54-question JEE Advanced format where negative marking heavily impacts scores, Physics suffered 6 negative marks from over-attempting, whereas Maths benefited from cautious, accurate selection.", "rankNote": "While your Physics rank of 17 and Maths rank of 45 kept you near the top, Chemistry rank plunged to 117 with 27 marks, proving the cohort performed much better in Chemistry and making it your biggest rank-driver to fix.", "errorCodeNote": "'No Idea Flashed' was the single most frequent error code with 9 instances, hitting Maths hardest with 5 occurrences and revealing real concept gaps, closely followed by 8 'Correction Error' slips that cost raw marks.", "conceptSuggestions": [{"concept": "Atomic Structure", "suggestion": "Revisit quantum numbers and orbital energy node equations to address the 3 wrong and 2 unattempted questions."}, {"concept": "Trignometry", "suggestion": "Solve targeted multi-angle identity and equation-solving problems to clear the 5 missed or incorrect questions in Maths."}, {"concept": "Kinematics", "suggestion": "Focus on relative motion and calculus-based kinematics problems to eliminate the 4 wrong attempts in Physics."}, {"concept": "Redox reaction", "suggestion": "Practice balancing complex redox equations and equivalent weight calculations to recover marks lost on 4 questions."}]}}, {"paperId": "27-07-2026P2", "date": "27-07-2026", "dateLabel": "27 Jul 2026", "pattern": "JEE Advanced", "totalQuestions": 54, "overall": {"right": 31, "wrong": 12, "unattempted": 11, "total": 54, "trackedTotal": 54, "untrackedSubjects": [], "accuracy": 72.1, "attemptRate": 79.6, "score": 106, "maxScore": 186, "rank": 28, "pctOfMax": 57.0}, "subjects": [{"subject": "Physics", "totalQ": 18, "right": 13, "wrong": 3, "unattempted": 2, "score": 45, "maxScore": 62, "subjectRank": 27, "accuracy": 81.2, "attemptRate": 88.9, "tracked": true, "pctOfMax": 72.6}, {"subject": "Chemistry", "totalQ": 18, "right": 9, "wrong": 6, "unattempted": 3, "score": 27, "maxScore": 62, "subjectRank": 78, "accuracy": 60.0, "attemptRate": 83.3, "tracked": true, "pctOfMax": 43.5}, {"subject": "Maths", "totalQ": 18, "right": 9, "wrong": 3, "unattempted": 6, "score": 34, "maxScore": 62, "subjectRank": 25, "accuracy": 75.0, "attemptRate": 66.7, "tracked": true, "pctOfMax": 54.8}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 0, "unattempted": 2}, {"subject": "Chemistry", "concept": "Mole Concept", "wrong": 4, "unattempted": 0}, {"subject": "Chemistry", "concept": "Periodic", "wrong": 2, "unattempted": 1}, {"subject": "Maths", "concept": "Coordinate Geometry", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "Straight Lines", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "Trignometry", "wrong": 1, "unattempted": 6}, {"subject": "Physics", "concept": "Dimensions", "wrong": 1, "unattempted": 0}, {"subject": "Physics", "concept": "Kinematics", "wrong": 2, "unattempted": 1}], "errorCodes": [{"code": "NCNS", "label": "Concept Not Studied", "subject": "Chemistry", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Maths", "count": 1}, {"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Physics", "count": 2}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 1}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Chemistry", "count": 2}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 4}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 2}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Physics", "count": 1}], "insights": {"headline": "Solid Physics and Maths performance yields an overall rank of 28, but heavy penalty losses in Chemistry require immediate attention.", "strengths": ["Physics led your scorecard with 45 out of 62 marks and 81.2% accuracy, securing a strong subject rank of 27.", "Maths demonstrated precise question selection with 75.0% accuracy and a subject rank of 25 despite a conservative attempt rate of 66.7%."], "weaknesses": ["Chemistry suffered from 6 incorrect attempts out of 15, dropping accuracy to 60.0% and dragging your subject rank down to 78.", "Unforced administrative errors cost vital marks, notably 3 questions marked as 'Done But Not Bubbled' across Physics and Maths."], "patternNote": "In this 54-question JEE Advanced format where wrong attempts trigger negative marks, taking 12 incorrect answers cost crucial points from your total score of 106 out of 186.", "rankNote": "Your overall rank of 28 is well-supported by top-30 subject ranks in Maths (25) and Physics (27). However, your Chemistry rank of 78 reveals that the cohort scored much higher in Chemistry, making it the primary drag on your overall standing.", "errorCodeNote": "The single most frequent error code was 'No Idea Flashed' with 6 total instances, hitting Maths hardest with 4 unattempted questions. This points to key conceptual recognition gaps, while execution issues like 'Correction Error' and 'Formula Error' added 8 more lost opportunities.", "conceptSuggestions": [{"concept": "Mole Concept", "suggestion": "With 4 wrong questions, re-solve core stoichiometry and limiting reagent problems to build step-by-step calculation rigor."}, {"concept": "Trignometry", "suggestion": "With 6 unattempted and 1 wrong question, review compound angle identities and practice multi-step JEE Advanced equation-solving techniques."}, {"concept": "Periodic", "suggestion": "Address 2 wrong and 1 unattempted question by reviewing NCERT trend exceptions for ionisation enthalpy and electron gain enthalpy."}, {"concept": "Atomic Structure", "suggestion": "Convert your 2 unattempted questions by revising quantum numbers, node calculations, and Bohr model formula applications."}]}}, {"paperId": "03-08-2026", "date": "03-08-2026", "dateLabel": "03 Aug 2026", "pattern": "JEE Main", "totalQuestions": 75, "overall": {"right": 43, "wrong": 21, "unattempted": 11, "total": 75, "trackedTotal": 75, "untrackedSubjects": [], "accuracy": 67.2, "attemptRate": 85.3, "score": 151, "maxScore": 300, "rank": 61, "pctOfMax": 50.3}, "subjects": [{"subject": "Physics", "totalQ": 25, "right": 16, "wrong": 8, "unattempted": 1, "score": 55, "maxScore": 100, "subjectRank": 26, "accuracy": 66.7, "attemptRate": 96.0, "tracked": true, "pctOfMax": 55.0}, {"subject": "Chemistry", "totalQ": 25, "right": 10, "wrong": 10, "unattempted": 5, "score": 32, "maxScore": 100, "subjectRank": 258, "accuracy": 50.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 32.0}, {"subject": "Maths", "totalQ": 25, "right": 17, "wrong": 3, "unattempted": 5, "score": 64, "maxScore": 100, "subjectRank": 25, "accuracy": 85.0, "attemptRate": 80.0, "tracked": true, "pctOfMax": 64.0}], "concepts": [{"subject": "Chemistry", "concept": "Atomic Structure", "wrong": 3, "unattempted": 2}, {"subject": "Chemistry", "concept": "Mole Concept", "wrong": 3, "unattempted": 2}, {"subject": "Chemistry", "concept": "Normality", "wrong": 1, "unattempted": 0}, {"subject": "Chemistry", "concept": "Periodic Classification", "wrong": 1, "unattempted": 1}, {"subject": "Chemistry", "concept": "n-factor", "wrong": 2, "unattempted": 0}, {"subject": "Maths", "concept": "Image of point", "wrong": 1, "unattempted": 1}, {"subject": "Maths", "concept": "Straight Lines", "wrong": 1, "unattempted": 1}, {"subject": "Maths", "concept": "Trignometry", "wrong": 0, "unattempted": 2}, {"subject": "Maths", "concept": "foot of perpendicular", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "lines (Angle between)", "wrong": 0, "unattempted": 1}, {"subject": "Physics", "concept": "Kinematics", "wrong": 2, "unattempted": 0}, {"subject": "Physics", "concept": "NLM", "wrong": 1, "unattempted": 1}, {"subject": "Physics", "concept": "UDE", "wrong": 2, "unattempted": 0}, {"subject": "Physics", "concept": "Vectors", "wrong": 3, "unattempted": 0}], "errorCodes": [{"code": "NDNB", "label": "Done But Not Bubbled", "subject": "Chemistry", "count": 2}, {"code": "NDUQ", "label": "Didn't Understand Question", "subject": "Physics", "count": 1}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Chemistry", "count": 3}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 5}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 3}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 2}, {"code": "WFE", "label": "Formula Error", "subject": "Physics", "count": 2}, {"code": "WIR", "label": "Improper Reading", "subject": "Chemistry", "count": 1}, {"code": "WIR", "label": "Improper Reading", "subject": "Physics", "count": 3}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Strong Maths execution yields top rank, but Chemistry accuracy slips drag down overall 151 score.", "strengths": ["Maths performance was outstanding, securing a subject rank of 25 with 64 marks and an 85% accuracy rate.", "Physics demonstrated strong engagement with a high 96% attempt rate, delivering a solid 55 marks and rank 26."], "weaknesses": ["Chemistry critically dragged overall results with 10 wrong questions, resulting in a low 50% accuracy and rank 258.", "Careless execution errors heavily impacted performance, losing 21 marks across 21 incorrect attempts."], "patternNote": "Your attempt rate of 85.3% across the 75 questions in 180 minutes shows good speed, but the -1 penalty on MCQs cost you 21 marks overall.", "rankNote": "While your overall rank of 61 is backed by strong top-26 ranks in Maths (25) and Physics (26), your Chemistry rank of 258 reveals you fell far behind the cohort in that subject.", "errorCodeNote": "The single most frequent error code was Correction Error with 9 total occurrences, hitting Chemistry hardest with 5 instances. This reveals that marks were lost due to careless execution and calculation mistakes rather than a lack of subject preparation.", "conceptSuggestions": [{"concept": "Atomic Structure", "suggestion": "Review quantum numbers and Bohr's radius/energy formulas to address the 3 wrong and 2 unattempted questions."}, {"concept": "Mole Concept", "suggestion": "Practice 15-20 target stoichiometry and concentration term problems to eliminate the 5 lost question opportunities."}, {"concept": "Vectors", "suggestion": "Revisit dot/cross product properties and scalar triple products to fix the 3 incorrect Physics attempts."}, {"concept": "n-factor", "suggestion": "Revise redox reaction balancing and equivalent weight definitions to prevent future errors in this core topic."}]}}, {"paperId": "17-08-2026", "date": "17-08-2026", "dateLabel": "17 Aug 2026", "pattern": "BITSAT", "totalQuestions": 130, "overall": {"right": 79, "wrong": 12, "unattempted": 9, "total": 130, "trackedTotal": 100, "untrackedSubjects": ["English", "IQ"], "accuracy": 86.8, "attemptRate": 91.0, "score": 285, "maxScore": 390, "rank": 16, "pctOfMax": 73.1}, "subjects": [{"subject": "Physics", "totalQ": 30, "right": 26, "wrong": 1, "unattempted": 3, "score": 74, "maxScore": 90, "subjectRank": 14, "accuracy": 96.3, "attemptRate": 90.0, "tracked": true, "pctOfMax": 82.2}, {"subject": "Chemistry", "totalQ": 30, "right": 21, "wrong": 9, "unattempted": 0, "score": 54, "maxScore": 90, "subjectRank": 146, "accuracy": 70.0, "attemptRate": 100.0, "tracked": true, "pctOfMax": 60.0}, {"subject": "Maths", "totalQ": 40, "right": 32, "wrong": 2, "unattempted": 6, "score": 90, "maxScore": 120, "subjectRank": 17, "accuracy": 94.1, "attemptRate": 85.0, "tracked": true, "pctOfMax": 75.0}, {"subject": "English", "totalQ": 10, "right": null, "wrong": null, "unattempted": null, "score": 26, "maxScore": 30, "subjectRank": 4, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 86.7}, {"subject": "IQ", "totalQ": 20, "right": null, "wrong": null, "unattempted": null, "score": 41, "maxScore": 60, "subjectRank": 59, "accuracy": null, "attemptRate": null, "tracked": false, "pctOfMax": 68.3}], "concepts": [{"subject": "Chemistry", "concept": "Bonding", "wrong": 4, "unattempted": 0}, {"subject": "Chemistry", "concept": "Chemical Bond", "wrong": 2, "unattempted": 0}, {"subject": "Chemistry", "concept": "Lattice Energy", "wrong": 2, "unattempted": 0}, {"subject": "Chemistry", "concept": "Solubility", "wrong": 1, "unattempted": 0}, {"subject": "Maths", "concept": "Matrices", "wrong": 2, "unattempted": 3}, {"subject": "Maths", "concept": "Trignometric equation", "wrong": 0, "unattempted": 3}, {"subject": "Physics", "concept": "Differentiation", "wrong": 0, "unattempted": 1}, {"subject": "Physics", "concept": "NLM", "wrong": 1, "unattempted": 2}], "errorCodes": [{"code": "NLOT", "label": "Lack Of Time", "subject": "Maths", "count": 4}, {"code": "NLOT", "label": "Lack Of Time", "subject": "Physics", "count": 3}, {"code": "NNIF", "label": "No Idea Flashed", "subject": "Maths", "count": 2}, {"code": "WCE", "label": "Correction Error", "subject": "Chemistry", "count": 4}, {"code": "WCE", "label": "Correction Error", "subject": "Maths", "count": 1}, {"code": "WCE", "label": "Correction Error", "subject": "Physics", "count": 1}, {"code": "WFE", "label": "Formula Error", "subject": "Chemistry", "count": 4}, {"code": "WFE", "label": "Formula Error", "subject": "Maths", "count": 1}, {"code": "WNL", "label": "No Luck", "subject": "Chemistry", "count": 1}], "insights": {"headline": "Secured an impressive overall Rank 16 with a score of 285/390, driven by top-notch accuracy in Physics and Maths but dragged down by Chemistry errors.", "strengths": ["Delivered elite accuracy in Physics (96.3% accuracy, score 74/90, rank 14) and Maths (94.1% accuracy, score 90/120, rank 17).", "Performed strongly in English with a rank of 4 (score 26/30) and solid non-tracked support in IQ with a score of 41/60 (rank 59)."], "weaknesses": ["Suffered a major setback in Chemistry with an accuracy of only 70.0% and 9 wrong answers, dropping your subject rank to 146.", "Left 7 high-value questions unattempted across Maths and Physics due to pacing constraints."], "patternNote": "BITSAT demands rapid speed across 130 questions, and while your overall attempt rate of 91.0% is strong, speed bottlenecks in Maths and Physics cost you key attempt opportunities.", "rankNote": "Your overall rank of 16 is stellar, but comparing your subject ranks reveals that while Physics (rank 14) and Maths (rank 17) placed you in the top tier, your Chemistry score of 54/90 crashed your subject rank to 146 as the cohort scored significantly higher.", "errorCodeNote": "The single most frequent error code overall is Lack Of Time with 7 instances, which hit Maths hardest (4 unattempted), while Chemistry suffered heavily from execution slips with 4 Correction Errors and 4 Formula Errors.", "conceptSuggestions": [{"concept": "Matrices", "suggestion": "Practice fast determinant calculation shortcuts to eliminate the 5 lost opportunities (2 wrong, 3 unattempted) under tight time limits."}, {"concept": "Bonding", "suggestion": "Revise molecular orbital configurations and overlapping rules to fix the 4 wrong attempts caused by formula and correction errors."}, {"concept": "Trignometric equation", "suggestion": "Work through timed formula-application drills to quickly solve general equations and recover the 3 unattempted questions."}, {"concept": "NLM", "suggestion": "Solve 15 target standard free-body diagram problems to improve speed and confidence on the 3 missed questions."}]}}], "overallInsights": {"headline": "High accuracy ceiling in speed tests, but overall score stability is heavily degraded by avoidable execution errors.", "strengths": ["Peak performance of 90.0% (score 270/300, Rank 14) on 13 Jul JEE Main demonstrates excellent ceiling capability.", "Consistently high BITSAT performance with 86%+ accuracy and top-25 ranks across both attempts.", "Strong attempt rates reaching up to 100% when confidence and speed align well."], "weaknesses": ["High volume of Correction Errors and Formula Errors causing severe score drops on 27 Jul and 03 Aug.", "Recurring loss of marks in core concepts like Atomic Structure, Trigonometry, and Kinematics across multiple test formats.", "Pacing difficulties in Maths leading to Lack Of Time unattempted questions."], "patternNote": ["BITSAT: Strongest pattern with 86%+ accuracy and top-25 ranks across both attempts.", "JEE Main: Volatile performance ranging from 90.0% (270/300) down to 50.3% (151/300).", "JEE Advanced: Accuracy drops under deep multi-step pressure, hitting 62.5% on 27 Jul."], "rankNote": ["BITSAT rank improved from 22 to 16, demonstrating strong relative cohort standing.", "JEE Main rank swung from Rank 14 (score 270) down to Rank 61 (score 151).", "Ranks are non-comparable across patterns; Advanced Rank 22 reflects higher percentile than Main."], "errorCodeNote": ["Correction Error and Formula Error drive over 60% of mistakes, proving an execution-heavy issue.", "Lack Of Time repeatedly hits Maths sections, leaving manageable questions unattempted late in papers.", "Implement structured scratchpad working and daily 15-minute formula flashcard drills immediately."], "conceptSuggestions": [{"concept": "Atomic Structure", "suggestion": "Revise quantum numbers, Bohr model calculations, and spectral line transitions to eliminate recurring mistakes across 5 papers."}, {"concept": "Trignometry", "suggestion": "Practice identity conversions and trigonometric equations under timed conditions to cut down unattempted questions in BITSAT and Advanced."}, {"concept": "Kinematics", "suggestion": "Re-derive calculus-based motion equations and review sign conventions to eliminate repeated calculation errors in Advanced tests."}, {"concept": "Mole Concept", "suggestion": "Work through stoichiometry, concentration terms, and n-factor problems to restore accuracy in Chemistry numerical questions."}]}, "physicsInsights": {"headline": "High potential masked by calculation slips and Kinematics errors across formats.", "notes": ["13 Jul peak score of 95 (Rank 11) sharply dropped to 55 on 03 Aug.", "23 execution mistakes (12 Correction Errors, 11 Formula Errors) dominate total lost marks.", "Kinematics is the single weakest concept, causing 9 lost questions across 4 tests."]}, "chemistryInsights": {"headline": "Peak mid-July results sharply declined in August due to mounting execution blunders.", "notes": ["Ranks dropped heavily from Rank 32 in July to Rank 258 in August JEE Main.", "25 Correction Errors and 17 Formula Errors reveal severe execution and calculation carelessness.", "Atomic Structure remains the weakest concept, losing marks across six different test papers."]}, "mathsInsights": {"headline": "Strong speed in BITSAT and Main, but conceptual stalls limit Advanced performance.", "notes": ["Peaked at Rank 6 (95/100 Main) and Rank 17 (BITSAT), but Advanced scores dipped to 30/62.", "22 'No Idea Flashed' and 16 'Lack of Time' errors reveal recurring conceptual stalls and time pressure.", "Trigonometry is the primary failure point, accounting for 10 incorrect and 15 unattempted questions total."]}}</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("dashboard-data").textContent);
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  var SUBJECT_VAR = { Physics: "phy", Chemistry: "chem", Maths: "math", English: "eng", IQ: "iq" };
+  var SUBJECT_HEX_LIGHT = { Physics: "#2a78d6", Chemistry: "#eb6834", Maths: "#1baf7a", English: "#c9930a", IQ: "#c05a86" };
+  var SUBJECT_ORDER = ["Physics", "Chemistry", "Maths", "English", "IQ"];
+  var PATTERN_VAR = { "JEE Main": "accent", "JEE Advanced": "advanced", "BITSAT": "bitsat" };
+  var PATTERN_SHAPE = { "JEE Main": "circle", "JEE Advanced": "square", "BITSAT": "triangle" };
+  var PATTERN_BADGE_CLASS = { "JEE Main": "main", "JEE Advanced": "advanced", "BITSAT": "bitsat" };
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "class") node.className = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+  function text(tag, className, str) {
+    var n = el(tag, { class: className || "" });
+    n.textContent = str;
+    return n;
+  }
+  function svg(tag, attrs) {
+    var node = document.createElementNS(SVGNS, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+    return node;
+  }
+  function fmtPct(v) { return v === null || v === undefined ? "—" : (Math.round(v * 10) / 10) + "%"; }
+  function accClass(acc) { if (acc === null || acc === undefined) return "na"; return acc >= 85 ? "good" : acc >= 60 ? "warn" : "bad"; }
+
+  var ttEl = document.getElementById("tooltip");
+  function showTooltip(x, y, titleText, rows) {
+    ttEl.innerHTML = "";
+    var title = el("div", { class: "tt-title" }); title.textContent = titleText; ttEl.appendChild(title);
+    rows.forEach(function (r) {
+      var row = el("div", { class: "tt-row" });
+      var key = el("div", { class: "tt-key" });
+      if (r.color) { var sw = el("span", { class: "tt-swatch" }); sw.style.background = r.color; key.appendChild(sw); }
+      var kt = document.createElement("span"); kt.textContent = r.label; key.appendChild(kt);
+      var val = el("span", { class: "tt-val" }); val.textContent = r.value;
+      row.appendChild(key); row.appendChild(val); ttEl.appendChild(row);
+    });
+    ttEl.style.left = x + "px"; ttEl.style.top = y + "px"; ttEl.classList.add("show");
+  }
+  function hideTooltip() { ttEl.classList.remove("show"); }
+
+  var LEGEND_SWATCH_CLASS = {
+    line: "legend-line", dot: "legend-dot", circle: "legend-dot",
+    square: "legend-square", triangle: "legend-triangle",
+  };
+  function legendItem(color, label, kind) {
+    var item = el("div", { class: "legend-item" });
+    var sw = el("span", { class: LEGEND_SWATCH_CLASS[kind] || "legend-swatch" });
+    sw.style.background = color;
+    item.appendChild(sw);
+    var lab = document.createElement("span"); lab.textContent = label; item.appendChild(lab);
+    return item;
+  }
+
+  // ---------------- Marker shapes for line-chart data points ----------------
+  function drawMarker(shape, cx, cy, r, fill, strokeWidth) {
+    var attrs = { fill: fill, stroke: "var(--surface)", "stroke-width": strokeWidth };
+    if (shape === "square") {
+      var side = r * 1.7;
+      return svg("rect", Object.assign({ x: cx - side / 2, y: cy - side / 2, width: side, height: side, rx: 2 }, attrs));
+    }
+    if (shape === "triangle") {
+      var R = r * 1.25;
+      var pts = [
+        [cx, cy - R],
+        [cx + R * 0.866, cy + R * 0.5],
+        [cx - R * 0.866, cy + R * 0.5],
+      ].map(function (p) { return p[0].toFixed(2) + "," + p[1].toFixed(2); }).join(" ");
+      return svg("polygon", Object.assign({ points: pts }, attrs));
+    }
+    return svg("circle", Object.assign({ cx: cx, cy: cy, r: r }, attrs));
+  }
+
+  // ---------------- Subject score/max bar chart (handles untracked) ----------------
+  function subjectScoreChart(container, subjects) {
+    var W = 560, H = 260, padL = 46, padR = 10, padT = 34, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Score by subject" });
+    var n = subjects.length, bw = plotW / n * 0.5;
+    var maxVal = Math.max.apply(null, subjects.map(function (r) { return r.maxScore || 0; })) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxVal * f);
+      s.appendChild(lab);
+    });
+    subjects.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var val = row.score || 0;
+      var h = Math.max(2, plotH * (val / maxVal));
+      var x = cx - bw / 2, y = padT + plotH - h;
+      var color = "var(--" + SUBJECT_VAR[row.subject] + ")";
+      var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, rx: 4, fill: color });
+      s.appendChild(rect);
+      var vlab = svg("text", { class: "bar-value", x: cx, y: y - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      vlab.textContent = val + "/" + row.maxScore;
+      s.appendChild(vlab);
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject + (row.tracked ? "" : " *");
+      s.appendChild(clab);
+      var hit = svg("rect", { class: "hit-target", x: cx - plotW / n / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        rect.classList.add("hovered");
+        var pt = evt.touches ? evt.touches[0] : evt;
+        var rows = [
+          { label: "Score", value: val + " / " + row.maxScore, color: color },
+          { label: "% of max", value: fmtPct(row.pctOfMax) },
+        ];
+        if (row.subjectRank !== null && row.subjectRank !== undefined) rows.push({ label: "Subject rank", value: "#" + row.subjectRank });
+        if (row.tracked) rows.push({ label: "Right / Wrong / Unatt.", value: row.right + " / " + row.wrong + " / " + row.unattempted });
+        else rows.push({ label: "Detail", value: "not tracked" });
+        showTooltip(pt.clientX, pt.clientY, row.subject, rows);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+    });
+    container.appendChild(s);
+    if (subjects.some(function (r) { return !r.tracked; })) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "* score/rank is real; question-level right/wrong detail isn't tracked for this section in the source data.")]));
+    }
+  }
+
+  // ---------------- Rank by subject (lower bar = better rank) ----------------
+  function subjectRankChart(container, subjects, overallRank) {
+    var ranked = subjects.filter(function (r) { return r.subjectRank !== null && r.subjectRank !== undefined; });
+    if (!ranked.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "No per-subject rank reported for this test.")]));
+      return;
+    }
+    var hasOverall = overallRank !== null && overallRank !== undefined;
+    var W = 560, H = 260, padL = 46, padR = 10, padT = 34, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Rank by subject" });
+    var n = ranked.length, bw = plotW / n * 0.5;
+    var vals = ranked.map(function (r) { return r.subjectRank; });
+    if (hasOverall) vals.push(overallRank);
+    var maxVal = Math.max.apply(null, vals) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxVal * f);
+      s.appendChild(lab);
+    });
+    ranked.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var val = row.subjectRank;
+      var h = Math.max(2, plotH * (val / maxVal));
+      var x = cx - bw / 2, y = padT + plotH - h;
+      var color = "var(--" + SUBJECT_VAR[row.subject] + ")";
+      var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, rx: 4, fill: color });
+      s.appendChild(rect);
+      var vlab = svg("text", { class: "bar-value", x: cx, y: y - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      vlab.textContent = "#" + val;
+      s.appendChild(vlab);
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject;
+      s.appendChild(clab);
+      var hit = svg("rect", { class: "hit-target", x: cx - plotW / n / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        rect.classList.add("hovered");
+        var pt = evt.touches ? evt.touches[0] : evt;
+        showTooltip(pt.clientX, pt.clientY, row.subject, [
+          { label: "Rank", value: "#" + val, color: color },
+          { label: "Score", value: row.score + " / " + row.maxScore },
+        ]);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+    });
+    if (hasOverall) {
+      var ly = padT + plotH - plotH * (overallRank / maxVal);
+      s.appendChild(svg("line", {
+        x1: padL, x2: W - padR, y1: ly, y2: ly,
+        stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "6,4",
+      }));
+      var labelText = "Overall #" + overallRank;
+      var estW = labelText.length * 7.4 + 10;
+      var lx = W - padR, ltY = ly - 8;
+      s.appendChild(svg("rect", {
+        x: lx - estW, y: ltY - 13, width: estW, height: 18, rx: 4,
+        fill: "var(--surface)", stroke: "var(--hairline-2)", "stroke-width": 1,
+      }));
+      var llab = svg("text", {
+        x: lx - 6, y: ltY, "text-anchor": "end",
+        style: "font-size:13px;font-weight:700;fill:var(--ink-2);",
+      });
+      llab.textContent = labelText;
+      s.appendChild(llab);
+    }
+    container.appendChild(s);
+    container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("Lower bar = better rank." + (hasOverall ? " Dashed line = overall rank." : ""))]));
+    if (ranked.length < subjects.length) {
+      var missing = subjects.filter(function (r) { return r.subjectRank === null || r.subjectRank === undefined; }).map(function (r) { return r.subject; }).join(", ");
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("No rank reported for: " + missing)]));
+    }
+  }
+
+  // ---------------- Right/Wrong/Unattempted stacked bar (tracked subjects only) ----------------
+  function statusStackChart(container, subjects) {
+    var tracked = subjects.filter(function (r) { return r.tracked; });
+    if (!tracked.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(
+        "No question-level mistake tracking available for this test's subjects.")]));
+      return;
+    }
+    var W = 560, H = 260, padL = 40, padR = 10, padT = 20, padB = 44;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Right, wrong, unattempted by subject" });
+    var n = tracked.length, bw = plotW / n * 0.5;
+    var maxTotal = Math.max.apply(null, tracked.map(function (r) { return r.totalQ; })) || 1;
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var lab = svg("text", { class: "axis-label", x: padL - 8, y: y + 4, "text-anchor": "end", style: "font-size:14px;" });
+      lab.textContent = Math.round(maxTotal * f);
+      s.appendChild(lab);
+    });
+    var order = [["right", "Right", "good"], ["wrong", "Wrong", "critical"], ["unattempted", "Unattempted", "muted-status"]];
+    tracked.forEach(function (row, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var x = cx - bw / 2;
+      var yCursor = padT + plotH;
+      order.forEach(function (spec) {
+        var key = spec[0], val = row[key];
+        var h = plotH * (val / maxTotal);
+        if (h <= 0) return;
+        var y = yCursor - h;
+        var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, fill: "var(--" + spec[2] + ")" });
+        s.appendChild(rect);
+        var hit = svg("rect", { class: "hit-target", x: x, y: y, width: bw, height: h });
+        s.appendChild(hit);
+        (function (label, val, rect) {
+          function activate(evt) {
+            rect.classList.add("hovered");
+            var pt = evt.touches ? evt.touches[0] : evt;
+            showTooltip(pt.clientX, pt.clientY, row.subject + " — " + label, [{ label: "Questions", value: val + " of " + row.totalQ }]);
+          }
+          hit.addEventListener("pointermove", activate);
+          hit.addEventListener("pointerenter", activate);
+          hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+          hit.setAttribute("tabindex", "0");
+          hit.addEventListener("focus", activate);
+          hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+        })(spec[1], val, rect);
+        yCursor = y - 2;
+      });
+      var clab = svg("text", { class: "cat-label", x: cx, y: H - 10, "text-anchor": "middle", style: "font-size:17px;" });
+      clab.textContent = row.subject;
+      s.appendChild(clab);
+    });
+    container.appendChild(s);
+    container.appendChild(el("div", { class: "legend" }, [
+      legendItem("var(--good)", "Right", "sw"), legendItem("var(--critical)", "Wrong", "sw"), legendItem("var(--muted-status)", "Unattempted", "sw")
+    ]));
+    if (tracked.length < subjects.length) {
+      var missing = subjects.filter(function (r) { return !r.tracked; }).map(function (r) { return r.subject; }).join(", ");
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("Not shown (untracked): " + missing)]));
+    }
+  }
+
+  // ---------------- Generic line chart (supports per-point pattern-colored markers) ----------------
+  function lineChart(container, xLabels, series, opts) {
+    opts = opts || {};
+    var W = 1080, H = 260, padL = opts.padL || 42, padR = opts.padR || 16, padT = 20, padB = 34;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": opts.ariaLabel || "Trend chart" });
+    var allVals = [];
+    series.forEach(function (sr) { sr.values.forEach(function (v) { if (v !== null && v !== undefined) allVals.push(v); }); });
+    var invert = !!opts.invert;
+    var minV = opts.min !== undefined ? opts.min : Math.min(0, Math.min.apply(null, allVals));
+    var maxV = opts.max !== undefined ? opts.max : Math.max.apply(null, allVals) * 1.15;
+    var n = xLabels.length;
+    function xAt(i) { return padL + (n === 1 ? plotW / 2 : plotW * i / (n - 1)); }
+    function yAt(v) {
+      var f = (v - minV) / (maxV - minV || 1);
+      if (invert) f = 1 - f;
+      return padT + plotH * (1 - f);
+    }
+    (opts.yTicks || [0, 0.25, 0.5, 0.75, 1]).forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 && !invert ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var val = minV + (maxV - minV) * f;
+      var labAttrs = { class: "axis-label", x: padL - 8, y: y + 3, "text-anchor": "end" };
+      var labStyle = "";
+      if (opts.yAxisFontSize) labStyle += "font-size:" + opts.yAxisFontSize + "px;";
+      if (opts.yAxisFill) labStyle += "fill:" + opts.yAxisFill + ";";
+      if (labStyle) labAttrs.style = labStyle;
+      var lab = svg("text", labAttrs);
+      lab.textContent = Math.round(val) + (opts.suffix || "");
+      s.appendChild(lab);
+    });
+    xLabels.forEach(function (lab, i) {
+      var xAttrs = { class: "cat-label", x: xAt(i), y: H - 8, "text-anchor": "middle" };
+      var xStyle = "";
+      if (opts.xAxisFontSize) xStyle += "font-size:" + opts.xAxisFontSize + "px;";
+      if (opts.xAxisFill) xStyle += "fill:" + opts.xAxisFill + ";";
+      if (xStyle) xAttrs.style = xStyle;
+      var t = svg("text", xAttrs);
+      t.textContent = lab;
+      s.appendChild(t);
+    });
+    var crosshair = svg("line", { class: "crosshair", x1: 0, x2: 0, y1: padT, y2: padT + plotH });
+    s.appendChild(crosshair);
+
+    series.forEach(function (sr) {
+      var d = "";
+      sr.values.forEach(function (v, i) { if (v === null || v === undefined) return; d += (d ? "L" : "M") + xAt(i) + "," + yAt(v) + " "; });
+      s.appendChild(svg("path", { class: "line-mark", d: d, stroke: sr.color || "var(--ink-3)" }));
+      sr.values.forEach(function (v, i) {
+        if (v === null || v === undefined) return;
+        var markerColor = (sr.pointColors && sr.pointColors[i]) || sr.color || "var(--ink-3)";
+        var shape = (sr.pointShapes && sr.pointShapes[i]) || "circle";
+        var dotR = opts.dotRadius || 4.5;
+        s.appendChild(drawMarker(shape, xAt(i), yAt(v), dotR, markerColor, dotR > 4.5 ? 2 : 1.5));
+      });
+    });
+
+    xLabels.forEach(function (lab, i) {
+      var hit = svg("rect", { class: "hit-target", x: xAt(i) - (plotW / n) / 2, y: padT, width: plotW / n, height: plotH });
+      s.appendChild(hit);
+      function activate(evt) {
+        crosshair.setAttribute("x1", xAt(i)); crosshair.setAttribute("x2", xAt(i)); crosshair.style.opacity = 1;
+        var pt = evt.touches ? evt.touches[0] : evt;
+        var rows = series.map(function (sr) {
+          var v = sr.values[i];
+          var value = v === null || v === undefined ? "—" : (opts.valueFmt ? opts.valueFmt(v, i) : v);
+          var color = (sr.pointColors && sr.pointColors[i]) || sr.color;
+          return { label: sr.name, color: color, value: value };
+        });
+        showTooltip(pt.clientX, pt.clientY, opts.titleFmt ? opts.titleFmt(i) : lab, rows);
+      }
+      hit.addEventListener("pointermove", activate);
+      hit.addEventListener("pointerenter", activate);
+      hit.addEventListener("pointerleave", function () { crosshair.style.opacity = 0; hideTooltip(); });
+      hit.setAttribute("tabindex", "0");
+      hit.addEventListener("focus", activate);
+      hit.addEventListener("blur", function () { crosshair.style.opacity = 0; hideTooltip(); });
+    });
+
+    container.appendChild(s);
+    var legendClass = "legend" + (opts.smallLegend ? " legend-sm" : "");
+    if (opts.legend) {
+      var legend = el("div", { class: legendClass });
+      opts.legend.forEach(function (l) { legend.appendChild(legendItem(l.color, l.label, l.kind || "line")); });
+      container.appendChild(legend);
+    } else if (series.length > 1) {
+      var legend2 = el("div", { class: legendClass });
+      series.forEach(function (sr) { legend2.appendChild(legendItem(sr.color, sr.name, "line")); });
+      container.appendChild(legend2);
+    }
+  }
+
+  // ---------------- Horizontal bar: weak concepts ----------------
+  // ---------------- Error code breakdown (vertical stacked: x = error code, color = subject) ----------------
+  function errorCodeChart(container, errorCodes, opts) {
+    opts = opts || {};
+    if (!errorCodes || !errorCodes.length) {
+      container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode("No error codes logged for this test.")]));
+      return;
+    }
+    var byCode = {};
+    errorCodes.forEach(function (r) {
+      if (!byCode[r.code]) byCode[r.code] = { code: r.code, label: r.label, total: 0, bySubject: {} };
+      byCode[r.code].total += r.count;
+      byCode[r.code].bySubject[r.subject] = (byCode[r.code].bySubject[r.subject] || 0) + r.count;
+    });
+    var codes = Object.values(byCode).sort(function (a, b) { return b.total - a.total; });
+    var subjectsPresent = SUBJECT_ORDER.filter(function (subj) { return codes.some(function (c) { return c.bySubject[subj]; }); });
+
+    var padL = opts.padL || 42, padR = opts.padR || 16;
+    var W = 1080, H = opts.H || 280, padT = 16, padB = opts.padB || 36;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+    var n = codes.length, bw = plotW / n * 0.5;
+    var maxTotal = Math.max.apply(null, codes.map(function (c) { return c.total; })) || 1;
+    var s = svg("svg", { class: "chart", width: W, height: H, viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Mistakes by error code, colored by subject" });
+    var yStyle = "";
+    if (opts.yAxisFontSize) yStyle += "font-size:" + opts.yAxisFontSize + "px;";
+    if (opts.yAxisFill) yStyle += "fill:" + opts.yAxisFill + ";";
+    var xStyle = opts.xAxisFontSize ? "font-size:" + opts.xAxisFontSize + "px;" : "";
+    if (opts.xAxisBold) xStyle += "font-weight:700;";
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var y = padT + plotH * (1 - f);
+      s.appendChild(svg("line", { class: f === 0 ? "axis-line" : "grid-line", x1: padL, x2: W - padR, y1: y, y2: y }));
+      var labAttrs = { class: "axis-label", x: padL - 8, y: y + 3, "text-anchor": "end" };
+      if (yStyle) labAttrs.style = yStyle;
+      var lab = svg("text", labAttrs);
+      lab.textContent = Math.round(maxTotal * f);
+      s.appendChild(lab);
+    });
+    codes.forEach(function (c, i) {
+      var cx = padL + plotW * (i + 0.5) / n;
+      var x = cx - bw / 2;
+      var yCursor = padT + plotH;
+      subjectsPresent.forEach(function (subj) {
+        var val = c.bySubject[subj];
+        if (!val) return;
+        var h = plotH * (val / maxTotal);
+        var y = yCursor - h;
+        var color = "var(--" + SUBJECT_VAR[subj] + ")";
+        var rect = svg("rect", { class: "bar-mark", x: x, y: y, width: bw, height: h, fill: color });
+        s.appendChild(rect);
+        var hit = svg("rect", { class: "hit-target", x: x, y: y, width: bw, height: h });
+        s.appendChild(hit);
+        (function (subj, val, rect, color) {
+          function activate(evt) {
+            rect.classList.add("hovered");
+            var pt = evt.touches ? evt.touches[0] : evt;
+            showTooltip(pt.clientX, pt.clientY, c.label + " (" + c.code + ")", [{ label: subj, value: val, color: color }]);
+          }
+          hit.addEventListener("pointermove", activate);
+          hit.addEventListener("pointerenter", activate);
+          hit.addEventListener("pointerleave", function () { rect.classList.remove("hovered"); hideTooltip(); });
+          hit.setAttribute("tabindex", "0");
+          hit.addEventListener("focus", activate);
+          hit.addEventListener("blur", function () { rect.classList.remove("hovered"); hideTooltip(); });
+        })(subj, val, rect, color);
+        yCursor = y - 2;
+      });
+      var vlab = svg("text", { class: "bar-value", x: cx, y: padT + plotH - plotH * (c.total / maxTotal) - 10, "text-anchor": "middle", style: "font-size:22px;fill:var(--ink-1);font-weight:800;" });
+      vlab.textContent = c.total;
+      s.appendChild(vlab);
+      var clab1Attrs = { class: "cat-label", x: cx, y: H - padB + (opts.labelGap || 18), "text-anchor": "middle" };
+      if (xStyle) clab1Attrs.style = xStyle;
+      var clab1 = svg("text", clab1Attrs);
+      clab1.textContent = c.code;
+      s.appendChild(clab1);
+    });
+    container.appendChild(s);
+    var legend = el("div", { class: "legend" });
+    subjectsPresent.forEach(function (subj) { legend.appendChild(legendItem("var(--" + SUBJECT_VAR[subj] + ")", subj, "sw")); });
+    container.appendChild(legend);
+    var keyText = codes.map(function (c) { return c.code + " = " + c.label; }).join("  ·  ");
+    container.appendChild(el("div", { class: "untracked-note" }, [document.createTextNode(keyText)]));
+  }
+
+  function kpiRow(items) {
+    var row = el("div", { class: "kpi-row", style: "--kpi-cols: " + items.length + ";" });
+    items.forEach(function (it) {
+      var v = el("div", { class: "v num" + (it.cls ? " " + it.cls : "") });
+      v.textContent = it.value;
+      row.appendChild(el("div", { class: "kpi" }, [v, text("div", "l", it.label)]));
+    });
+    return row;
+  }
+
+  function noteBody(value) {
+    if (Array.isArray(value)) {
+      var ul = el("ul", { class: "note-bullets" });
+      value.forEach(function (t) { ul.appendChild(text("li", "", t)); });
+      return ul;
+    }
+    var span = document.createElement("span");
+    span.textContent = value;
+    return span;
+  }
+
+  function shortRemarksBlock(insights, title) {
+    if (!insights) return null;
+    var wrap = el("div", { class: "remarks" });
+    wrap.appendChild(el("div", { class: "remarks-head" }, [
+      text("span", "eyebrow", title || "Examiner's Remarks"),
+      text("span", "powered", "(AI-Generated)")
+    ]));
+    wrap.appendChild(text("h3", "headline", insights.headline));
+    if (insights.notes && insights.notes.length) wrap.appendChild(noteBody(insights.notes));
+    return wrap;
+  }
+
+  function remarksBlock(insights, patternLabel) {
+    if (!insights) return null;
+    var wrap = el("div", { class: "remarks" });
+    wrap.appendChild(el("div", { class: "remarks-head" }, [
+      text("span", "eyebrow", "Examiner's Remarks"),
+      text("span", "powered", "(AI-Generated)")
+    ]));
+    wrap.appendChild(text("h3", "headline", insights.headline));
+
+    var grid = el("div", { class: "remarks-grid" });
+    var sCol = el("div", { class: "remarks-col" }, [text("h4", "", "Strengths")]);
+    var sList = el("ul", { class: "strengths" });
+    (insights.strengths || []).forEach(function (t) { sList.appendChild(text("li", "", t)); });
+    sCol.appendChild(sList);
+    var wCol = el("div", { class: "remarks-col" }, [text("h4", "", "Needs Work")]);
+    var wList = el("ul", { class: "weaknesses" });
+    (insights.weaknesses || []).forEach(function (t) { wList.appendChild(text("li", "", t)); });
+    wCol.appendChild(wList);
+    grid.appendChild(sCol); grid.appendChild(wCol);
+    wrap.appendChild(grid);
+
+    if (insights.patternNote) {
+      var patternTag = patternLabel === "Cross-Pattern" ? "Cross-Pattern Exam Note" : patternLabel + " Pattern Note";
+      var pn = el("div", { class: "note-block" }, [text("span", "tag", patternTag), noteBody(insights.patternNote)]);
+      wrap.appendChild(pn);
+    }
+    if (insights.rankNote) {
+      var rn = el("div", { class: "note-block rank" }, [text("span", "tag", "Rank Note"), noteBody(insights.rankNote)]);
+      wrap.appendChild(rn);
+    }
+    if (insights.errorCodeNote) {
+      var en = el("div", { class: "note-block errorcode" }, [text("span", "tag", "Error Code Note"), noteBody(insights.errorCodeNote)]);
+      wrap.appendChild(en);
+    }
+
+    if (insights.conceptSuggestions && insights.conceptSuggestions.length) {
+      wrap.appendChild(text("h4", "", "Concept-level Suggestions"));
+      var csWrap = el("div", { class: "concept-suggest" });
+      insights.conceptSuggestions.forEach(function (c) {
+        csWrap.appendChild(el("div", { class: "cs-item" }, [text("div", "cs-name", c.concept), text("div", "cs-text", c.suggestion)]));
+      });
+      wrap.appendChild(csWrap);
+    }
+    return wrap;
+  }
+
+  function conceptTable(concepts, hideSubject) {
+    var card = el("div", { class: "table-card table-card-flush concept-table-card" });
+    card.appendChild(text("div", "table-card-title", "Concept-level Mistakes"));
+    var currentSort = { key: "wrong", dir: -1 };
+    var table = el("table", { class: "data-table" });
+    var thead = el("thead");
+    var cols = [
+      { key: "concept", label: "Concept" }, { key: "subject", label: "Subject" },
+      { key: "wrong", label: "Wrong", num: true }, { key: "unattempted", label: "Unatt.", num: true },
+    ];
+    if (hideSubject) cols = cols.filter(function (c) { return c.key !== "subject"; });
+    var trh = el("tr");
+    cols.forEach(function (c) {
+      var th = el("th", { class: c.num ? "num" : "" });
+      th.textContent = c.label;
+      th.addEventListener("click", function () {
+        currentSort.dir = currentSort.key === c.key ? -currentSort.dir : -1;
+        currentSort.key = c.key;
+        render();
+      });
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    table.appendChild(thead);
+    var tbody = el("tbody");
+    table.appendChild(tbody);
+    function render() {
+      var rows = concepts.slice().sort(function (a, b) {
+        var av = a[currentSort.key], bv = b[currentSort.key];
+        if (typeof av === "string") return av.localeCompare(bv) * currentSort.dir;
+        return (av - bv) * currentSort.dir;
+      });
+      tbody.innerHTML = "";
+      rows.forEach(function (r) {
+        var tr = el("tr", { class: "row-subj-" + (SUBJECT_VAR[r.subject] || "") });
+        tr.appendChild(el("td", { class: "strong" }, [document.createTextNode(r.concept)]));
+        if (!hideSubject) {
+          var tdS = el("td"); tdS.textContent = r.subject;
+          tr.appendChild(tdS);
+        }
+        var tdW = el("td", { class: "num" }); tdW.textContent = r.wrong; tr.appendChild(tdW);
+        var tdU = el("td", { class: "num" }); tdU.textContent = r.unattempted; tr.appendChild(tdU);
+        tbody.appendChild(tr);
+      });
+    }
+    render();
+    card.appendChild(table);
+    return card;
+  }
+
+  function patternStrip(pattern) {
+    var info = DATA.patternInfo[pattern];
+    if (!info) return el("div");
+    var wrap = el("div", { class: "pattern-strip" });
+    [["Question mix", info.questions]].forEach(function (f) {
+      wrap.appendChild(el("div", { class: "pattern-fact" }, [text("div", "pf-label", f[0]), text("div", "pf-val", f[1])]));
+    });
+    return wrap;
+  }
+
+  function subjectTable(subjects) {
+    var card = el("div", { class: "table-card table-card-flush subject-table-card" });
+    card.appendChild(text("div", "table-card-title", "Subject-wise Detail"));
+    var t = el("table", { class: "data-table" });
+    var thead = el("thead", {}, [(function () {
+      var tr = el("tr");
+      ["Subject", "Qs", "Right", "Wrong", "Unatt.", "Score", "Rank"].forEach(function (h, idx) {
+        var th = el("th", { class: idx >= 1 ? "num" : "" }); th.textContent = h; tr.appendChild(th);
+      });
+      return tr;
+    })()]);
+    t.appendChild(thead);
+    var tbody = el("tbody");
+    subjects.forEach(function (r) {
+      var tr = el("tr", { class: "row-subj-" + (SUBJECT_VAR[r.subject] || "") });
+      var tdS = el("td"); tdS.textContent = r.subject;
+      tr.appendChild(tdS);
+      [r.totalQ, r.tracked ? r.right : "—", r.tracked ? r.wrong : "—", r.tracked ? r.unattempted : "—"].forEach(function (v) {
+        var td = el("td", { class: "num" }); td.textContent = v; tr.appendChild(td);
+      });
+      var tdScore = el("td", { class: "num strong" }); tdScore.textContent = r.score + "/" + r.maxScore; tr.appendChild(tdScore);
+      var tdRank = el("td", { class: "num" }); tdRank.textContent = r.subjectRank !== null && r.subjectRank !== undefined ? "#" + r.subjectRank : "—"; tr.appendChild(tdRank);
+      tbody.appendChild(tr);
+    });
+    t.appendChild(tbody);
+    card.appendChild(t);
+    return card;
+  }
+
+  // ---------------- Per-test panel ----------------
+  function buildTestPanel(test) {
+    var panel = el("section", { class: "panel", id: "panel-" + cssId(test.paperId), role: "tabpanel" });
+    var badgeClass = PATTERN_BADGE_CLASS[test.pattern] || "main";
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", "Test — " + test.dateLabel + (test.paperId.match(/(P\d+)$/) ? " (" + test.paperId.match(/(P\d+)$/)[1] + ")" : "")),
+        el("div", { class: "meta" }, [
+          (function () {
+            var b = el("span", { class: "badge " + badgeClass }, [el("span", { class: "dot" })]);
+            var t = document.createElement("span"); t.textContent = test.pattern; b.appendChild(t);
+            return b;
+          })(),
+        ])
+      ])
+    ]);
+    panel.appendChild(head);
+    panel.appendChild(patternStrip(test.pattern));
+
+    panel.appendChild(kpiRow([
+      { value: test.overall.score + "/" + test.overall.maxScore, label: "Score" },
+      { value: fmtPct(test.overall.pctOfMax), label: "Percentage" },
+      { value: test.overall.rank !== null ? "#" + test.overall.rank : "—", label: "Overall Rank" },
+      { value: fmtPct(test.overall.accuracy), label: "Accuracy" },
+      { value: test.overall.right, label: "Correct", cls: "good" },
+      { value: test.overall.wrong, label: "Incorrect", cls: "critical" },
+    ]));
+
+    panel.appendChild(subjectTable(test.subjects));
+
+    var grid = el("div", { class: "grid-2" });
+    var c1 = el("div", { class: "card" }, [text("div", "section-title", "Score by Subject")]);
+    var c1chart = el("div"); c1.appendChild(c1chart);
+    var c2 = el("div", { class: "card" }, [text("div", "section-title", "Right / Wrong / Unattempted")]);
+    var c2chart = el("div"); c2.appendChild(c2chart);
+    var c3 = el("div", { class: "card" }, [text("div", "section-title", "Rank by Subject")]);
+    var c3chart = el("div"); c3.appendChild(c3chart);
+    grid.appendChild(c1); grid.appendChild(c3); grid.appendChild(c2);
+    panel.appendChild(grid);
+    subjectScoreChart(c1chart, test.subjects);
+    statusStackChart(c2chart, test.subjects);
+    subjectRankChart(c3chart, test.subjects, test.overall.rank);
+
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Mistakes by Error Code"),
+      text("div", "section-sub", "Why each question was missed, in the coach's own error taxonomy")
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, test.errorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    panel.appendChild(conceptTable(test.concepts));
+
+    var remarks = remarksBlock(test.insights, test.pattern);
+    if (remarks) panel.appendChild(remarks);
+
+    return panel;
+  }
+
+  function cssId(paperId) { return paperId.replace(/[^a-zA-Z0-9]/g, "_"); }
+
+  // ---------------- Overview panel ----------------
+  function buildOverviewPanel() {
+    var panel = el("section", { class: "panel active", id: "panel-overview", role: "tabpanel" });
+    var tests = DATA.tests;
+    var patterns = Array.from(new Set(tests.map(function (t) { return t.pattern; })));
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", "Overall Performance"),
+        el("div", { class: "meta" }, [
+          text("span", "", tests.length + " tests"),
+          text("span", "dot-sep", tests[0].dateLabel + " – " + tests[tests.length - 1].dateLabel),
+        ]),
+        el("div", { class: "meta", style: "margin-top:8px;" }, patterns.map(function (p) {
+          var badgeClass = PATTERN_BADGE_CLASS[p] || "main";
+          var b = el("span", { class: "badge " + badgeClass }, [el("span", { class: "dot" })]);
+          var t = document.createElement("span"); t.textContent = p; b.appendChild(t);
+          return b;
+        }))
+      ])
+    ]);
+    panel.appendChild(head);
+
+    var bestRankTest = tests.slice().sort(function (a, b) { return (a.overall.rank || 1e9) - (b.overall.rank || 1e9); })[0];
+    var latest = tests[tests.length - 1];
+    var trackedPct = tests.map(function (t) { return t.overall.pctOfMax; }).filter(function (v) { return v !== null; });
+    var avgPct = trackedPct.reduce(function (a, b) { return a + b; }, 0) / trackedPct.length;
+    panel.appendChild(kpiRow([
+      { value: tests.length, label: "Tests Taken" },
+      { value: fmtPct(avgPct), label: "Avg Percentage" },
+      { value: "#" + bestRankTest.overall.rank, label: "Best Rank (" + bestRankTest.pattern + ")" },
+      { value: latest.overall.rank !== null ? "#" + latest.overall.rank : "—", label: "Most Recent Rank" },
+    ]));
+
+    var trendCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Percentage Trend Across Tests"),
+    ]);
+    var trendChart = el("div"); trendCard.appendChild(trendChart);
+    panel.appendChild(trendCard);
+    lineChart(trendChart, tests.map(function (t) { return t.paperId; }),
+      [{
+        name: "Percentage", color: "var(--ink-3)",
+        values: tests.map(function (t) { return t.overall.pctOfMax; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: 100, suffix: "%", ariaLabel: "Score trend",
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+        valueFmt: function (v, i) { return v + "% (" + tests[i].overall.score + "/" + tests[i].overall.maxScore + ")"; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+      });
+
+    var rankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Overall Rank Trend"),
+    ]);
+    var rankChart = el("div"); rankCard.appendChild(rankChart);
+    panel.appendChild(rankCard);
+    var ranks = tests.map(function (t) { return t.overall.rank; }).filter(function (v) { return v !== null; });
+    lineChart(rankChart, tests.map(function (t) { return t.paperId; }),
+      [{ name: "Rank", color: "var(--ink-3)", values: tests.map(function (t) { return t.overall.rank; }),
+         pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+         pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }) }],
+      {
+        min: 0, max: 75, yTicks: [0, 0.2, 0.4, 0.6, 0.8, 1],
+        ariaLabel: "Rank trend", valueFmt: function (v, i) { return "#" + v; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+      });
+
+    var accCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Subject-wise Percentage Trend"),
+    ]);
+    var accChart = el("div"); accCard.appendChild(accChart);
+    panel.appendChild(accCard);
+    var xLabels = tests.map(function (t) { return t.paperId; });
+    lineChart(accChart, xLabels, ["Physics", "Chemistry", "Maths"].map(function (subj) {
+      return {
+        name: subj, color: "var(--" + SUBJECT_VAR[subj] + ")",
+        values: tests.map(function (t) {
+          var row = t.subjects.filter(function (s) { return s.subject === subj; })[0];
+          return row ? row.pctOfMax : null;
+        })
+      };
+    }), {
+      min: 0, max: 100, suffix: "%", ariaLabel: "Subject percentage trend",
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+      xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50,
+    });
+
+    var subjRankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Subject-wise Rank Trend"),
+    ]);
+    var subjRankChart = el("div"); subjRankCard.appendChild(subjRankChart);
+    panel.appendChild(subjRankCard);
+    var subjRankSeries = ["Physics", "Chemistry", "Maths"].map(function (subj) {
+      return {
+        name: subj, color: "var(--" + SUBJECT_VAR[subj] + ")",
+        values: tests.map(function (t) {
+          var row = t.subjects.filter(function (s) { return s.subject === subj; })[0];
+          return row && row.subjectRank !== null && row.subjectRank !== undefined ? row.subjectRank : null;
+        })
+      };
+    });
+    var allSubjRanks = subjRankSeries.reduce(function (acc, sr) { return acc.concat(sr.values.filter(function (v) { return v !== null; })); }, []);
+    lineChart(subjRankChart, xLabels, subjRankSeries, {
+      min: Math.min.apply(null, allSubjRanks) - 3, max: Math.max.apply(null, allSubjRanks) + 3,
+      ariaLabel: "Subject rank trend", valueFmt: function (v) { return "#" + v; },
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+      xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50,
+    });
+
+    var allErrorCodes = [];
+    tests.forEach(function (t) { (t.errorCodes || []).forEach(function (e) { allErrorCodes.push(e); }); });
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", "Mistakes by Error Code"),
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, allErrorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    var summaryCard = el("div", { class: "table-card table-card-flush summary-table-card" });
+    summaryCard.appendChild(text("div", "table-card-title", "Summary"));
+    var t = el("table", { class: "data-table" });
+    t.appendChild(el("thead", {}, [(function () {
+      var tr = el("tr");
+      ["Test", "Pattern", "Score", "Percent", "Rank"].forEach(function (h, idx) {
+        var th = el("th", { class: idx >= 2 ? "num" : "" }); th.textContent = h; tr.appendChild(th);
+      });
+      return tr;
+    })()]));
+    var tbody = el("tbody");
+    tests.forEach(function (r) {
+      var tr = el("tr", { class: "row-" + (PATTERN_BADGE_CLASS[r.pattern] || "main") });
+      tr.appendChild(el("td", { class: "strong" }, [document.createTextNode(r.paperId)]));
+      var tdP = el("td"); tdP.textContent = r.pattern; tr.appendChild(tdP);
+      var tdScore = el("td", { class: "num strong" }); tdScore.textContent = r.overall.score + "/" + r.overall.maxScore; tr.appendChild(tdScore);
+      var tdPct = el("td", { class: "num" });
+      var chip = el("span", { class: "acc-chip " + accClass(r.overall.pctOfMax) }); chip.textContent = fmtPct(r.overall.pctOfMax);
+      tdPct.appendChild(chip); tr.appendChild(tdPct);
+      var tdRank = el("td", { class: "num" }); tdRank.textContent = r.overall.rank !== null ? "#" + r.overall.rank : "—"; tr.appendChild(tdRank);
+      tbody.appendChild(tr);
+    });
+    t.appendChild(tbody);
+    summaryCard.appendChild(t);
+    panel.appendChild(summaryCard);
+
+    var remarks = remarksBlock(DATA.overallInsights, "Cross-Pattern");
+    if (remarks) panel.appendChild(remarks);
+
+    return panel;
+  }
+
+  // ---------------- Subject Overview panels (Physics / Chemistry / Maths) ----------------
+  function buildSubjectOverviewPanel(subject) {
+    var slug = subject.toLowerCase();
+    var subjColor = "var(--" + SUBJECT_VAR[subject] + ")";
+    var panel = el("section", { class: "panel subject-overview", id: "panel-" + slug + "-overview", role: "tabpanel" });
+    var tests = DATA.tests;
+    var patterns = Array.from(new Set(tests.map(function (t) { return t.pattern; })));
+    var xLabels = tests.map(function (t) { return t.paperId; });
+    function subjRow(t) { return t.subjects.filter(function (s) { return s.subject === subject; })[0]; }
+
+    var head = el("div", { class: "console-head" }, [
+      el("div", {}, [
+        text("h2", "", subject + " Overview"),
+        el("div", { class: "meta" }, [
+          text("span", "", tests.length + " tests"),
+          text("span", "dot-sep", tests[0].dateLabel + " – " + tests[tests.length - 1].dateLabel),
+        ]),
+      ])
+    ]);
+    panel.appendChild(head);
+
+    var subjPct = tests.map(function (t) { var r = subjRow(t); return r ? r.pctOfMax : null; }).filter(function (v) { return v !== null && v !== undefined; });
+    var avgPct = subjPct.reduce(function (a, b) { return a + b; }, 0) / subjPct.length;
+    var rankData = tests.map(function (t) {
+      var r = subjRow(t);
+      return { test: t, rank: r && r.subjectRank !== null && r.subjectRank !== undefined ? r.subjectRank : null };
+    });
+    var ranked = rankData.filter(function (x) { return x.rank !== null; });
+    var bestRank = ranked.length ? ranked.slice().sort(function (a, b) { return a.rank - b.rank; })[0] : null;
+    var latestRank = rankData[rankData.length - 1];
+
+    panel.appendChild(kpiRow([
+      { value: tests.length, label: "Tests Taken" },
+      { value: fmtPct(avgPct), label: "Avg Percentage" },
+      { value: bestRank ? "#" + bestRank.rank : "—", label: "Best Rank" + (bestRank ? " (" + bestRank.test.paperId + ")" : "") },
+      { value: latestRank.rank !== null ? "#" + latestRank.rank : "—", label: "Most Recent Rank" },
+    ]));
+
+    var trendCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " Percentage Trend"),
+    ]);
+    var trendChart = el("div"); trendCard.appendChild(trendChart);
+    panel.appendChild(trendCard);
+    lineChart(trendChart, xLabels,
+      [{
+        name: subject, color: subjColor,
+        values: tests.map(function (t) { var r = subjRow(t); return r ? r.pctOfMax : null; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: 100, suffix: "%", ariaLabel: subject + " percentage trend",
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+        valueFmt: function (v, i) { var r = subjRow(tests[i]); return r ? v + "% (" + r.score + "/" + r.maxScore + ")" : v + "%"; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+      });
+
+    var rankCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " Rank Trend"),
+    ]);
+    var rankChart = el("div"); rankCard.appendChild(rankChart);
+    panel.appendChild(rankCard);
+    var rankVals = ranked.map(function (x) { return x.rank; });
+    lineChart(rankChart, xLabels,
+      [{
+        name: subject, color: subjColor,
+        values: rankData.map(function (x) { return x.rank; }),
+        pointColors: tests.map(function (t) { return "var(--" + PATTERN_VAR[t.pattern] + ")"; }),
+        pointShapes: tests.map(function (t) { return PATTERN_SHAPE[t.pattern]; }),
+      }],
+      {
+        min: 0, max: Math.max.apply(null, rankVals) + 3,
+        ariaLabel: subject + " rank trend", valueFmt: function (v) { return "#" + v; },
+        titleFmt: function (i) { return tests[i].dateLabel + " — " + tests[i].pattern; },
+        legend: patterns.map(function (p) { return { color: "var(--" + PATTERN_VAR[p] + ")", label: p, kind: PATTERN_SHAPE[p] }; }),
+        yAxisFontSize: 20, yAxisFill: "var(--ink-1)",
+        xAxisFontSize: 17, xAxisFill: "var(--ink-1)", padL: 46, padR: 50, dotRadius: 9, smallLegend: true,
+      });
+
+    var subjErrorCodes = [];
+    tests.forEach(function (t) { (t.errorCodes || []).forEach(function (e) { if (e.subject === subject) subjErrorCodes.push(e); }); });
+    var ecCard = el("div", { class: "card wide" }, [
+      text("div", "section-title", subject + " — Mistakes by Error Code"),
+    ]);
+    var ecChart = el("div"); ecCard.appendChild(ecChart);
+    panel.appendChild(ecCard);
+    errorCodeChart(ecChart, subjErrorCodes, {
+      yAxisFontSize: 20, yAxisFill: "var(--ink-1)", xAxisFontSize: 21, xAxisBold: true, padL: 46, H: 420,
+      padB: 50, labelGap: 30,
+    });
+
+    var byKey = {};
+    tests.forEach(function (t) {
+      t.concepts.forEach(function (c) {
+        if (c.subject !== subject) return;
+        if (!byKey[c.concept]) byKey[c.concept] = { concept: c.concept, subject: subject, wrong: 0, unattempted: 0 };
+        byKey[c.concept].wrong += c.wrong;
+        byKey[c.concept].unattempted += c.unattempted;
+      });
+    });
+    panel.appendChild(conceptTable(Object.values(byKey), true));
+
+    var subjRemarks = shortRemarksBlock(DATA[slug + "Insights"], subject + " Examiner's Remarks");
+    if (subjRemarks) panel.appendChild(subjRemarks);
+
+    return panel;
+  }
+
+  var RAIL_META = {};
+
+  function buildRail() {
+    var rail = document.getElementById("rail");
+    var brandRow = el("div", { class: "rail-brand" }, [
+      el("div", {}, [text("p", "eyebrow", "Exam Console"), text("h1", "", "Monday Test Series")]),
+    ]);
+    var closeBtn = el("button", { class: "rail-close-btn", "aria-label": "Close menu" }, []);
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", closeRail);
+    brandRow.appendChild(closeBtn);
+    rail.appendChild(brandRow);
+
+    RAIL_META.overview = { title: "Overview", sub: DATA.tests.length + " tests" };
+    var btn0 = el("button", { class: "rail-item", role: "tab", "aria-selected": "true", "data-target": "overview" }, [
+      el("span", { class: "rail-dot" }), el("div", { class: "rt" }, [text("span", "label", "Overview"), text("span", "sub", DATA.tests.length + " tests")])
+    ]);
+    btn0.addEventListener("click", function () { selectPanel("overview"); });
+    rail.appendChild(btn0);
+
+    ["Physics", "Chemistry", "Maths"].forEach(function (subject) {
+      var target = subject.toLowerCase() + "-overview";
+      var label = subject + " Overview";
+      RAIL_META[target] = { title: label, sub: DATA.tests.length + " tests" };
+      var btnSubj = el("button", { class: "rail-item", role: "tab", "aria-selected": "false", "data-target": target }, [
+        el("span", { class: "rail-dot" }), el("div", { class: "rt" }, [text("span", "label", label), text("span", "sub", DATA.tests.length + " tests")])
+      ]);
+      btnSubj.addEventListener("click", function () { selectPanel(target); });
+      rail.appendChild(btnSubj);
+    });
+
+    var groups = {};
+    DATA.tests.forEach(function (t) { (groups[t.pattern] = groups[t.pattern] || []).push(t); });
+    Object.keys(groups).forEach(function (pattern) {
+      rail.appendChild(text("div", "rail-group-label", pattern));
+      groups[pattern].forEach(function (t) {
+        var id = cssId(t.paperId);
+        var suffixMatch = t.paperId.match(/(P\d+)$/);
+        var railLabel = t.dateLabel + (suffixMatch ? " (" + suffixMatch[1] + ")" : "");
+        RAIL_META[id] = { title: railLabel, sub: t.pattern + " · Rank #" + (t.overall.rank !== null ? t.overall.rank : "—") };
+        var btn = el("button", { class: "rail-item", role: "tab", "aria-selected": "false", "data-target": id }, [
+          el("span", { class: "rail-dot" }),
+          el("div", { class: "rt" }, [text("span", "label", railLabel), text("span", "sub", "Rank #" + (t.overall.rank !== null ? t.overall.rank : "—"))]),
+          text("span", "score-chip num", fmtPct(t.overall.pctOfMax))
+        ]);
+        btn.addEventListener("click", function () { selectPanel(id); });
+        rail.appendChild(btn);
+      });
+    });
+    rail.appendChild(el("div", { class: "rail-foot" }, [document.createTextNode(DATA.generatedFor)]));
+  }
+
+  function buildMobileChrome() {
+    var app = document.querySelector(".app");
+    var backdrop = el("div", { class: "rail-backdrop", id: "rail-backdrop" });
+    backdrop.addEventListener("click", closeRail);
+
+    var hamburger = el("button", { class: "hamburger-btn", id: "hamburger-btn", "aria-label": "Open test menu", "aria-expanded": "false", "aria-controls": "rail" }, [
+      el("span", {}), el("span", {}), el("span", {})
+    ]);
+    hamburger.addEventListener("click", function () {
+      if (document.getElementById("rail").classList.contains("open")) closeRail(); else openRail();
+    });
+    var titleWrap = el("div", { class: "mt-titlewrap" }, [
+      text("div", "mt-title", "Overview"), text("div", "mt-sub", DATA.tests.length + " tests")
+    ]);
+    var topbar = el("div", { class: "mobile-topbar", id: "mobile-topbar" }, [hamburger, titleWrap]);
+
+    app.insertBefore(topbar, app.firstChild);
+    app.insertBefore(backdrop, app.firstChild);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeRail();
+    });
+  }
+
+  function openRail() {
+    document.getElementById("rail").classList.add("open");
+    document.getElementById("rail-backdrop").classList.add("open");
+    document.getElementById("hamburger-btn").setAttribute("aria-expanded", "true");
+  }
+  function closeRail() {
+    var rail = document.getElementById("rail");
+    var backdrop = document.getElementById("rail-backdrop");
+    var hamburger = document.getElementById("hamburger-btn");
+    if (rail) rail.classList.remove("open");
+    if (backdrop) backdrop.classList.remove("open");
+    if (hamburger) hamburger.setAttribute("aria-expanded", "false");
+  }
+
+  function selectPanel(id) {
+    document.querySelectorAll(".rail-item").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-target") === id ? "true" : "false"); });
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("active"); });
+    var target = document.getElementById(id === "overview" ? "panel-overview" : "panel-" + id);
+    if (target) target.classList.add("active");
+    var meta = RAIL_META[id];
+    if (meta) {
+      var titleEl = document.querySelector("#mobile-topbar .mt-title");
+      var subEl = document.querySelector("#mobile-topbar .mt-sub");
+      if (titleEl) titleEl.textContent = meta.title;
+      if (subEl) subEl.textContent = meta.sub;
+    }
+    closeRail();
+    window.scrollTo(0, 0);
+  }
+
+  function init() {
+    buildRail();
+    buildMobileChrome();
+    var consoleEl = document.getElementById("console");
+    consoleEl.appendChild(buildOverviewPanel());
+    ["Physics", "Chemistry", "Maths"].forEach(function (subject) { consoleEl.appendChild(buildSubjectOverviewPanel(subject)); });
+    DATA.tests.forEach(function (t) { consoleEl.appendChild(buildTestPanel(t)); });
+  }
+  init();
+})();
+</script>

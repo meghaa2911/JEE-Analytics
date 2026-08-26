@@ -158,9 +158,11 @@
   var tests = DATA.tests;
   document.getElementById("meta").textContent =
     tests.length + " tests · " + tests[0].dateLabel + " – " + tests[tests.length - 1].dateLabel +
-    " · one chart per error code, bars split by subject, x-axis = test (Paper ID)";
+    " · totals across all codes, then one chart per error code, bars split by subject, x-axis = test (Paper ID)";
 
   // Union of every error code that appears at least once, with its total mistake count.
+  // "W"-prefixed codes are mistakes made while attempting; "N"-prefixed codes are reasons
+  // nothing was answered (i.e. unattempted).
   var byCode = {};
   tests.forEach(function (t) {
     (t.errorCodes || []).forEach(function (e) {
@@ -176,15 +178,21 @@
     return;
   }
 
-  codes.forEach(function (codeInfo) {
+  function sumMatching(matchFn) {
+    var total = 0;
+    tests.forEach(function (t) { (t.errorCodes || []).forEach(function (e) { if (matchFn(e)) total += e.count; }); });
+    return total;
+  }
+
+  function addCard(codeText, labelText, matchFn) {
     var card = el("div", { class: "card" });
     var head = el("div", { class: "card-head" }, [
-      el("span", { class: "card-code" }, [document.createTextNode(codeInfo.code)]),
-      el("span", { class: "card-label" }, [document.createTextNode(codeInfo.label)]),
+      el("span", { class: "card-code" }, [document.createTextNode(codeText)]),
+      el("span", { class: "card-label" }, [document.createTextNode(labelText)]),
       el("span", { class: "card-total" }, [document.createTextNode("Total"), document.createElement("br")]),
     ]);
     var totalStrong = document.createElement("b");
-    totalStrong.textContent = " " + codeInfo.total;
+    totalStrong.textContent = " " + sumMatching(matchFn);
     head.lastChild.appendChild(totalStrong);
     card.appendChild(head);
 
@@ -192,14 +200,21 @@
     card.appendChild(chartWrap);
     chartsEl.appendChild(card);
 
-    buildChart(chartWrap, codeInfo.code, codeInfo.label);
+    buildChart(chartWrap, matchFn, labelText);
+  }
+
+  addCard("ALL", "Total Errors (all wrong-attempt codes combined)", function (e) { return e.code.charAt(0) === "W"; });
+  addCard("ALL", "Total Unattempted (all no-answer codes combined)", function (e) { return e.code.charAt(0) === "N"; });
+
+  codes.forEach(function (codeInfo) {
+    addCard(codeInfo.code, codeInfo.label, function (e) { return e.code === codeInfo.code; });
   });
 
-  function buildChart(container, code, label) {
+  function buildChart(container, matchFn, label) {
     var series = tests.map(function (t) {
       var bySubj = {};
       (t.errorCodes || []).forEach(function (e) {
-        if (e.code === code) bySubj[e.subject] = (bySubj[e.subject] || 0) + e.count;
+        if (matchFn(e)) bySubj[e.subject] = (bySubj[e.subject] || 0) + e.count;
       });
       var total = SUBJECT_ORDER.reduce(function (s, su) { return s + (bySubj[su] || 0); }, 0);
       return { paperId: t.paperId, dateLabel: t.dateLabel, bySubj: bySubj, total: total };
